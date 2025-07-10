@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>我要上榜 - 模型评测榜单</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --main-bg: #232946;
+      --card-bg: #fff;
+      --main-blue: #3e5ba9;
+      --main-pink: #eebbc3;
+      --main-gray: #b8c1ec;
+      --text-main: #232946;
+      --text-light: #fff;
+      --shadow: 0 4px 24px rgba(30,40,90,0.10);
+    }
+    body {
+      margin: 0; font-family: 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+      background: var(--main-bg); color: var(--text-light);
+      font-size: 18px;
+    }
+    .navbar {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--main-bg); color: var(--text-light); padding: 0 48px; height: 68px;
+      border-bottom: 1px solid #2d3250;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .navbar .logo {
+      font-size: 28px; font-weight: bold; letter-spacing: 2px; color: var(--main-pink);
+      text-shadow: 0 2px 8px rgba(238,187,195,0.18);
+    }
+    .navbar .nav-links { display: flex; gap: 38px; }
+    .navbar .nav-links a, .navbar .login-btn {
+      color: var(--text-light); text-decoration: none; font-size: 18px; padding: 10px 18px; border-radius: 8px; transition: background 0.2s, color 0.2s;
+    }
+    .navbar .nav-links a.active, .navbar .nav-links a:hover { background: var(--main-blue); color: var(--main-pink); }
+    .navbar .login-btn {
+      background: var(--main-pink); color: var(--main-bg); font-weight: bold; cursor: pointer; border: none;
+      box-shadow: var(--shadow); font-size: 18px;
+    }
+    .main-container {
+      max-width: 800px;
+      margin: 48px auto 48px auto;
+      background: var(--card-bg);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 48px 48px 48px 48px;
+      color: var(--text-main);
+    }
+    .welcome-title {
+      font-size: 32px;
+      color: var(--main-blue);
+      margin-bottom: 16px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .welcome-text {
+      font-size: 18px;
+      color: #555;
+      margin-bottom: 32px;
+      text-align: center;
+      line-height: 1.6;
+    }
+    .section-title {
+      font-size: 24px;
+      color: var(--main-blue);
+      margin-bottom: 24px;
+      font-weight: bold;
+    }
+    .form-group {
+      margin-bottom: 24px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d0d0d0;
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .form-group .radio-group {
+      display: flex;
+      gap: 24px;
+    }
+    .form-group .radio-group label {
+      display: flex;
+      align-items: center;
+      font-weight: normal;
+      cursor: pointer;
+    }
+    .form-group .radio-group input[type="radio"] {
+      width: auto;
+      margin-right: 8px;
+    }
+    .form-group .explanation {
+      font-size: 14px;
+      color: #666;
+      margin-top: 4px;
+      font-style: italic;
+    }
+    .required {
+      color: #e74c3c;
+    }
+    .submit-btn {
+      background: var(--main-blue);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 16px 48px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+      width: 100%;
+      margin-top: 24px;
+    }
+    .submit-btn:hover {
+      background: var(--main-pink);
+      color: var(--main-bg);
+    }
+    .submit-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .error {
+      color: #e74c3c;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+    /* 成功弹窗 */
+    .success-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(35,41,70,0.45);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .success-modal.active {
+      display: flex;
+    }
+    .success-content {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      color: var(--text-main);
+      max-width: 400px;
+    }
+    .success-icon {
+      font-size: 48px;
+      color: #27ae60;
+      margin-bottom: 16px;
+    }
+    .success-title {
+      font-size: 24px;
+      color: var(--main-blue);
+      margin-bottom: 12px;
+      font-weight: bold;
+    }
+    .success-text {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 24px;
+    }
+    .close-btn {
+      background: var(--main-blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 32px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    @media (max-width: 900px) {
+      .main-container { padding: 24px 6vw; margin: 24px 4vw; }
+      .welcome-title { font-size: 24px; }
+      .welcome-text { font-size: 16px; }
+    }
+    .modal-bg {
+      display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(35,41,70,0.45); z-index: 1000; align-items: center; justify-content: center;
+    }
+    .modal-bg.active { display: flex; }
+    .modal-login {
+      background: var(--card-bg); border-radius: 20px; padding: 40px 36px 32px 36px; min-width: 340px; box-shadow: 0 8px 32px rgba(30,40,90,0.18);
+      position: relative; color: var(--text-main); display: flex; flex-direction: column; align-items: stretch;
+    }
+    .modal-login h3 { margin-top: 0; color: var(--main-blue); font-size: 22px; text-align: center; }
+    .modal-login .close { position: absolute; right: 18px; top: 16px; font-size: 26px; color: #888; cursor: pointer; }
+    .modal-login input { width: 100%; padding: 13px; border: 1px solid #d0d0d0; border-radius: 8px; font-size: 16px; margin-bottom: 0; }
+    .get-code-btn {
+      background: var(--main-blue); color: #fff; border: none; border-radius: 8px; padding: 0 18px; font-size: 15px; cursor: pointer; height: 44px; transition: background 0.2s;
+    }
+    .get-code-btn:disabled { background: #ccc; cursor: not-allowed; }
+    .login-action-btn {
+      background: var(--main-pink); color: var(--main-bg); font-weight: bold; cursor: pointer; border: none;
+      box-shadow: var(--shadow); font-size: 18px; border-radius: 8px; padding: 13px 0; margin-top: 10px;
+    }
+    .login-action-btn:hover { background: var(--main-blue); color: var(--main-pink); }
+    @media (max-width: 600px) {
+      .modal-login { min-width: 0; width: 90vw; padding: 24px 8vw; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航栏 -->
+  <div class="navbar">
+    <div class="logo">模型评测榜单</div>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="dataset.html">评测数据集</a>
+      <a href="apply.html" class="active">我要上榜</a>
+    </div>
+    <button class="login-btn" onclick="showLoginModal()">登录</button>
+  </div>
+
+  <div class="main-container">
+    <div class="welcome-title">欢迎加入打榜</div>
+    <div class="welcome-text">
+      感谢您参与汽车领域大模型评测榜单！我们致力于为行业提供最权威、最透明的模型能力评估。通过参与评测，您的模型将获得专业的性能分析报告，同时为汽车智能化发展贡献力量。让我们一起推动汽车AI技术的进步！
+    </div>
+
+    <div class="section-title">参与方式</div>
+    <div style="margin-bottom: 32px; color: #555; line-height: 1.6;">
+      <strong>API提交：</strong>将模型能力封装为HTTP接口，并提供相应的API文档。我们支持标准的RESTful API调用，确保评测过程的公平性和准确性。
+    </div>
+
+    <form id="applyForm">
+      <div class="form-group">
+        <label>联系方式 <span class="required">*</span></label>
+        <input type="tel" id="phone" placeholder="请输入手机号" required>
+        <div class="explanation">用于接收评测进度和结果通知</div>
+      </div>
+
+      <div class="form-group">
+        <label>联系邮箱 <span class="required">*</span></label>
+        <input type="email" id="email" placeholder="请输入邮箱" required>
+        <div class="explanation">用于接收详细的评测报告</div>
+      </div>
+
+      <div class="form-group">
+        <label>模型名称 <span class="required">*</span></label>
+        <input type="text" id="modelName" placeholder="请输入模型名称" required>
+      </div>
+
+      <div class="form-group">
+        <label>开发者类型 <span class="required">*</span></label>
+        <div class="radio-group">
+          <label><input type="radio" name="developerType" value="个人" required> 个人</label>
+          <label><input type="radio" name="developerType" value="团队" required> 团队</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>参数量 <span class="required">*</span></label>
+        <input type="text" id="params" placeholder="例如：7B、13B、175B" required>
+        <div class="explanation">请填写模型的参数量级</div>
+      </div>
+
+      <div class="form-group">
+        <label>是否开源 <span class="required">*</span></label>
+        <div class="radio-group">
+          <label><input type="radio" name="openSource" value="是" required> 是</label>
+          <label><input type="radio" name="openSource" value="否" required> 否</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>上下文长度 <span class="required">*</span></label>
+        <input type="number" id="contextLength" placeholder="请输入数字" min="1" required>
+        <div class="explanation">单位：K（千），例如：4K、8K、32K</div>
+      </div>
+
+      <div class="form-group">
+        <label>模型 API Endpoint <span class="required">*</span></label>
+        <input type="url" id="apiEndpoint" placeholder="https://api.example.com/v1/chat/completions" required>
+        <div class="explanation">提供可访问的HTTP类型服务可以加快评测进程</div>
+      </div>
+
+      <div class="form-group">
+        <label>模型ID <span class="required">*</span></label>
+        <input type="text" id="modelId" placeholder="请输入模型ID" required>
+        <div class="explanation">模型ID参数用于调用模型API，请确保和模型中参数命名的完全一致</div>
+      </div>
+
+      <div class="form-group">
+        <label>API Key</label>
+        <input type="password" id="apiKey" placeholder="请在此填写API Key">
+        <div class="explanation">平台会进行加密存储</div>
+      </div>
+
+      <div class="form-group">
+        <label>模型API文档</label>
+        <input type="url" id="apiDoc" placeholder="https://docs.example.com/api">
+        <div class="explanation">接口调用格式建议严格遵循标准API规范格式</div>
+      </div>
+
+      <div class="form-group">
+        <label>预计API并发量</label>
+        <input type="number" id="concurrency" placeholder="例如：10" min="1">
+        <div class="explanation">每秒可处理的并发请求数</div>
+      </div>
+
+      <div class="form-group">
+        <label>GitHub/官网</label>
+        <input type="url" id="website" placeholder="https://github.com/example/model">
+      </div>
+
+      <div class="form-group">
+        <label>模型发布日期 <span class="required">*</span></label>
+        <input type="date" id="releaseDate" required>
+        <div class="explanation">模型已发布：请选择模型首次公开发布或正式推出的日期；模型尚未发布：请选择模型训练完成的日期</div>
+      </div>
+
+      <div class="form-group">
+        <label>模型描述 <span class="required">*</span></label>
+        <textarea id="description" placeholder="请简单介绍申请评测的模型，不超过200字符" maxlength="200" required></textarea>
+        <div class="explanation">不超过200字符</div>
+      </div>
+
+      <div class="form-group">
+        <label>评测结果公开 <span class="required">*</span></label>
+        <div class="radio-group">
+          <label><input type="radio" name="publicResult" value="公开" required> 公开</label>
+          <label><input type="radio" name="publicResult" value="非公开" required> 非公开</label>
+        </div>
+        <div class="explanation">选择是否将评测结果在榜单中公开显示</div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">提交申请</button>
+    </form>
+  </div>
+
+  <!-- 成功弹窗 -->
+  <div class="success-modal" id="successModal">
+    <div class="success-content">
+      <div class="success-icon">✓</div>
+      <div class="success-title">申请提交成功</div>
+      <div class="success-text">已提交申请，评测结果将会发送到您的邮箱</div>
+      <button class="close-btn" onclick="closeSuccessModal()">确定</button>
+    </div>
+  </div>
+
+  <!-- 登录弹窗 -->
+  <div class="modal-bg" id="loginModal" style="display:none;">
+    <div class="modal-login">
+      <span class="close" onclick="hideLoginModal()">&times;</span>
+      <h3>手机号登录</h3>
+      <input type="tel" id="loginPhone" placeholder="请输入手机号" maxlength="11" style="margin-bottom:12px;">
+      <div style="display:flex; gap:10px; margin-bottom:12px;">
+        <input type="text" id="loginCode" placeholder="验证码" maxlength="6" style="flex:1;">
+        <button class="get-code-btn" onclick="getCode(this)">获取验证码</button>
+      </div>
+      <button class="login-action-btn" onclick="loginAction()">登录</button>
+    </div>
+  </div>
+
+  <script>
+    // 表单验证
+    function validateForm() {
+      const requiredFields = [
+        'phone', 'email', 'modelName', 'params', 'contextLength', 
+        'apiEndpoint', 'modelId', 'releaseDate', 'description'
+      ];
+      
+      let isValid = true;
+      
+      // 检查必填字段
+      requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        const errorDiv = field.parentNode.querySelector('.error');
+        if (errorDiv) errorDiv.remove();
+        
+        if (!field.value.trim()) {
+          isValid = false;
+          const error = document.createElement('div');
+          error.className = 'error';
+          error.textContent = '此字段为必填项';
+          field.parentNode.appendChild(error);
+        }
+      });
+      
+      // 检查单选按钮
+      const radioGroups = ['developerType', 'openSource', 'publicResult'];
+      radioGroups.forEach(groupName => {
+        const radios = document.querySelectorAll(`input[name="${groupName}"]`);
+        const checked = Array.from(radios).some(radio => radio.checked);
+        if (!checked) {
+          isValid = false;
+          const error = document.createElement('div');
+          error.className = 'error';
+          error.textContent = '请选择一个选项';
+          radios[0].parentNode.parentNode.appendChild(error);
+        }
+      });
+      
+      // 验证邮箱格式
+      const email = document.getElementById('email');
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (email.value && !emailRegex.test(email.value)) {
+        isValid = false;
+        const error = document.createElement('div');
+        error.className = 'error';
+        error.textContent = '请输入有效的邮箱地址';
+        email.parentNode.appendChild(error);
+      }
+      
+      // 验证手机号格式
+      const phone = document.getElementById('phone');
+      const phoneRegex = /^1[3-9]\d{9}$/;
+      if (phone.value && !phoneRegex.test(phone.value)) {
+        isValid = false;
+        const error = document.createElement('div');
+        error.className = 'error';
+        error.textContent = '请输入有效的手机号';
+        phone.parentNode.appendChild(error);
+      }
+      
+      return isValid;
+    }
+    
+    // 表单提交
+    document.getElementById('applyForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      if (validateForm()) {
+        // 显示成功弹窗
+        document.getElementById('successModal').classList.add('active');
+        
+        // 清空表单
+        document.getElementById('applyForm').reset();
+      }
+    });
+    
+    // 关闭成功弹窗
+    function closeSuccessModal() {
+      document.getElementById('successModal').classList.remove('active');
+    }
+    
+    // 点击弹窗外关闭
+    document.getElementById('successModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeSuccessModal();
+      }
+    });
+    
+    // 字符计数
+    document.getElementById('description').addEventListener('input', function() {
+      const maxLength = 200;
+      const currentLength = this.value.length;
+      const remaining = maxLength - currentLength;
+      
+      let counter = this.parentNode.querySelector('.char-counter');
+      if (!counter) {
+        counter = document.createElement('div');
+        counter.className = 'explanation';
+        this.parentNode.appendChild(counter);
+      }
+      
+      counter.textContent = `剩余 ${remaining} 字符`;
+      counter.style.color = remaining < 20 ? '#e74c3c' : '#666';
+    });
+
+    // 登录弹窗逻辑
+    function showLoginModal() {
+      document.getElementById('loginModal').style.display = 'flex';
+      setTimeout(() => document.getElementById('loginModal').classList.add('active'), 10);
+    }
+    function hideLoginModal() {
+      const modal = document.getElementById('loginModal');
+      modal.classList.remove('active');
+      setTimeout(() => { modal.style.display = 'none'; }, 200);
+    }
+    // 点击弹窗外关闭
+    document.addEventListener('mousedown', function(e) {
+      const modal = document.getElementById('loginModal');
+      if (modal && modal.classList.contains('active') && e.target === modal) hideLoginModal();
+    });
+    // 获取验证码按钮逻辑（仅前端演示）
+    function getCode(btn) {
+      btn.disabled = true;
+      let sec = 60;
+      btn.textContent = sec + 's';
+      const timer = setInterval(() => {
+        sec--;
+        btn.textContent = sec + 's';
+        if (sec <= 0) {
+          clearInterval(timer);
+          btn.disabled = false;
+          btn.textContent = '获取验证码';
+        }
+      }, 1000);
+    }
+    // 登录按钮逻辑（仅前端演示）
+    function loginAction() {
+      const phone = document.getElementById('loginPhone').value.trim();
+      const code = document.getElementById('loginCode').value.trim();
+      if (!/^1[3-9]\d{9}$/.test(phone)) {
+        alert('请输入有效的手机号');
+        return;
+      }
+      if (!/^\d{4,6}$/.test(code)) {
+        alert('请输入正确的验证码');
+        return;
+      }
+      alert('登录成功（演示）');
+      hideLoginModal();
+    }
+  </script>
+</body>
+</html> 

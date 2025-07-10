@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>之家仓颉</title>
+    <link rel="stylesheet" href="login-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-background">
+            <div class="background-pattern"></div>
+        </div>
+        
+        <div class="login-content">
+            <div class="login-header">
+                <div class="logo">
+                    <div class="logo-icon">汽车</div>
+                    <span class="logo-text">之家仓颉</span>
+                </div>
+                <h1>欢迎登录</h1>
+                <p>选择您的登录方式</p>
+            </div>
+
+            <div class="login-tabs">
+                <button class="tab-btn active" data-tab="external">外部用户</button>
+                <button class="tab-btn" data-tab="internal">内部用户</button>
+            </div>
+
+            <!-- 外部用户登录 -->
+            <div class="login-form active" id="external-login">
+                <div class="form-group">
+                    <label for="phone">手机号码</label>
+                    <input type="tel" id="phone" placeholder="请输入手机号码" class="form-input">
+                </div>
+                
+                <div class="form-group">
+                    <label for="verification-code">验证码</label>
+                    <div class="verification-input-group">
+                        <input type="text" id="verification-code" placeholder="请输入验证码" class="form-input">
+                        <button class="send-code-btn" id="send-code-btn">获取验证码</button>
+                    </div>
+                </div>
+
+                <button class="login-submit-btn" id="external-login-btn">登录</button>
+                
+                <div class="login-footer">
+                    <p>还没有账号？<a href="#" class="link">立即注册</a></p>
+                </div>
+            </div>
+
+            <!-- 内部用户登录 -->
+            <div class="login-form" id="internal-login">
+                <div class="qr-container">
+                    <div class="qr-code">
+                        <div class="qr-placeholder">
+                            <div class="qr-icon">📱</div>
+                            <p>请使用企业APP扫码登录</p>
+                        </div>
+                    </div>
+                    <div class="qr-instructions">
+                        <h3>扫码步骤</h3>
+                        <ol>
+                            <li>打开企业APP</li>
+                            <li>点击"扫一扫"功能</li>
+                            <li>扫描上方二维码</li>
+                            <li>确认登录信息</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="qr-status">
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span>等待扫码...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="login.js"></script>
+</body>
+</html> 

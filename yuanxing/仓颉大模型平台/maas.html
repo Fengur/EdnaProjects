@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaaS平台 - 元星智能</title>
+    <link rel="stylesheet" href="maas-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="logo.png" alt="仓颉Logo" class="logo-img">
+                <span class="logo-text">仓颉大模型平台</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="#" class="active">模型</a></li>
+                <li><a href="api-docs.html">API文档</a></li>
+                <li class="user-menu">
+                    <div class="user-avatar">U</div>
+                    <span class="user-name">用户</span>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="sidebar-menu">
+            <a href="#models" class="menu-item active" data-section="models">
+                <span class="menu-icon">🤖</span>
+                <span>模型广场</span>
+            </a>
+            <a href="#experience" class="menu-item" data-section="experience">
+                <span class="menu-icon">💬</span>
+                <span>体验中心</span>
+            </a>
+            <a href="#appkey" class="menu-item" data-section="appkey">
+                <span class="menu-icon">🔑</span>
+                <span>AppKey管理</span>
+            </a>
+            <a href="#statistics" class="menu-item" data-section="statistics">
+                <span class="menu-icon">📊</span>
+                <span>数据统计</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 模型广场 -->
+        <section id="models" class="content-section active">
+            <!-- 模型详情展示区域 -->
+            <div id="model-detail" class="model-detail-section" style="display: none;">
+                <div class="detail-header">
+                    <button class="back-btn" onclick="showModelGrid()">← 返回模型广场</button>
+                </div>
+                <div class="detail-content">
+                    <div class="model-overview">
+                        <div class="model-icon" id="detail-model-icon">🤖</div>
+                        <div class="model-basic-info">
+                            <h2 id="detail-model-name">模型名称</h2>
+                            <div class="model-tags" id="detail-model-tags">
+                                <span class="tag">通用</span>
+                                <span class="tag">对话</span>
+                            </div>
+                            <div class="model-publisher" id="detail-model-publisher">发布方</div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-tabs">
+                        <button class="detail-tab active" data-tab="introduction">模型介绍</button>
+                        <button class="detail-tab" data-tab="limitations">局限性与免责声明</button>
+                        <button class="detail-tab" data-tab="versions">版本信息</button>
+                    </div>
+                    
+                    <div class="detail-content-area">
+                        <!-- 模型介绍 -->
+                        <div id="introduction-content" class="detail-panel active">
+                            <div class="model-introduction" id="detail-model-introduction">
+                                模型介绍内容
+                            </div>
+                        </div>
+                        
+                        <!-- 局限性与免责声明 -->
+                        <div id="limitations-content" class="detail-panel">
+                            <div class="limitations-disclaimer">
+                                通义千问3-235B-A22B模型来源于第三方，百度智能云千帆大模型平台不保证其合规性，请您在使用前慎重考虑，确保合法合规使用并遵守第三方的要求。使用模型前请在"版本列表"中查看模型的开源协议，了解使用限制。如您发现模型/数据集/文件等有任何问题，请及时联系我们处理。
+                            </div>
+                        </div>
+                        
+                        <!-- 版本信息 -->
+                        <div id="versions-content" class="detail-panel">
+                            <div class="versions-container">
+                                <!-- 版本名称侧边栏 -->
+                                <div class="versions-sidebar">
+                                    <div class="sidebar-header">
+                                        <h4>版本列表</h4>
+                                    </div>
+                                    <div class="version-names-list" id="version-names-list">
+                                        <!-- 版本名称将通过JavaScript动态生成 -->
+                                    </div>
+                                </div>
+                                
+                                <!-- 版本详情主区域 -->
+                                <div class="versions-main">
+                                    <div class="versions-header">
+                                        <div class="versions-title">
+                                            <h4>版本详情</h4>
+                                            <span class="version-count" id="version-count">共 0 个版本</span>
+                                        </div>
+                                        <div class="versions-sort">
+                                            <select id="version-sort" onchange="sortVersions()">
+                                                <option value="date-desc">按发布时间 ↓</option>
+                                                <option value="date-asc">按发布时间 ↑</option>
+                                                <option value="name-asc">按版本名称 ↑</option>
+                                                <option value="name-desc">按版本名称 ↓</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="version-detail-content" id="version-detail-content">
+                                        <!-- 版本详细信息将通过JavaScript动态生成 -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="section-header">
+                <h1>模型广场</h1>
+                <p>探索和体验各种大模型服务</p>
+            </div>
+
+            <div class="search-filter">
+                <div class="search-box">
+                    <input type="text" placeholder="输入模型名称，搜索匹配模型" class="search-input">
+                    <button class="search-btn"><span class="search-icon">🔍</span></button>
+                </div>
+                <div class="filter-tags">
+                    <span class="filter-tag active" data-vendor="all">全部</span>
+                    <span class="filter-tag" data-vendor="cangjie">仓颉</span>
+                    <span class="filter-tag" data-vendor="qianwen">通义千问</span>
+                    <span class="filter-tag" data-vendor="deepseek">DeepSeek</span>
+                    <span class="filter-tag" data-vendor="glm">智谱AI</span>
+                    <span class="filter-tag" data-vendor="qianfan">千帆</span>
+                </div>
+            </div>
+
+            <div class="models-grid" style="max-height: 700px; overflow-y: auto;">
+                <!-- 仓颉大模型 8B -->
+                <div class="model-card" data-vendor="cangjie">
+                    <div class="model-header">
+                        <div class="model-logo">🧬</div>
+                        <div class="model-info">
+                            <h3>仓颉大模型 8B</h3>
+                            <span class="model-source">仓颉</span>
+                        </div>
+                        <div class="model-tags">
+                            <span class="tag">通用</span>
+                            <span class="tag">对话</span>
+                        </div>
+                    </div>
+                    <p class="model-description" title="支持多轮对话、知识问答、文本生成，适用于企业级智能客服、内容创作、行业知识问答等多场景。">支持多轮对话、知识问答、文本生成，适用于企业级智能客服、内容创作、行业知识问答等多场景。</p>
+                    <div class="model-actions">
+                        <button class="action-btn secondary" onclick="showModelDetail('cangjie8b', '🧬', '仓颉大模型 8B', ['通用', '对话'], '仓颉', '仓颉大模型8B是专为汽车行业设计的轻量级大语言模型，具备强大的中文理解和生成能力。模型在汽车专业知识、技术文档理解、多轮对话等方面表现优异，支持智能客服、内容创作、知识问答等多种应用场景。通过持续优化，模型在推理速度和准确性方面不断提升，是汽车行业AI应用的理想选择。')">查看详情</button>
+                        <button class="action-btn secondary" onclick="window.location.href='api-docs.html'">API参考</button>
+                        <button class="action-btn primary" onclick="handleExperience('cangjie8b')">立即体验</button>
+                    </div>
+                </div>
+                <!-- 仓颉大模型 32B -->
+                <div class="model-card" data-vendor="cangjie">
+                    <div class="model-header">
+                        <div class="model-logo">🧬</div>
+                        <div class="model-info">
+                            <h3>仓颉大模型 32B</h3>
+                            <span class="model-source">仓颉</span>
+                        </div>
+                        <div class="model-tags">
+                            <span class="tag">通用</span>
+                            <span class="tag">推理</span>
+                        </div>
+                    </div>
+                    <p class="model-description" title="大参数量通用模型，具备更强的推理与知识理解能力，适合复杂业务场景和高精度需求。">大参数量通用模型，具备更强的推理与知识理解能力，适合复杂业务场景和高精度需求。</p>
+                    <div class="model-actions">
+                        <button class="action-btn secondary" onclick="showModelDetail('cangjie32b', '🧬', '仓颉大模型 32B', ['通用', '推理'], '仓颉', '仓颉大模型32B是汽车行业旗舰级大语言模型，拥有32B参数规模，具备强大的推理能力和深度知识理解。模型在复杂问题分析、技术文档解读、多模态理解等方面表现卓越，特别适合需要高精度推理的汽车技术场景。支持长上下文处理，能够理解复杂的汽车技术文档和工程问题，是汽车行业高端AI应用的核心引擎。')">查看详情</button>
+                        <button class="action-btn secondary" onclick="window.location.href='api-docs.html'">API参考</button>
+                        <button class="action-btn primary" onclick="handleExperience('cangjie32b')">立即体验</button>
+                    </div>
+                </div>
+                <!-- 通义千问 Qwen-72B -->
+                <div class="model-card" data-vendor="qianwen">
+                    <div class="model-header">
+                        <div class="model-logo">🤖</div>
+                        <div class="model-info">
+                            <h3>通义千问 Qwen-72B</h3>
+                            <span class="model-source">通义千问</span>
+                        </div>
+                        <div class="model-tags">
+                            <span class="tag">通用</span>
+                            <span class="tag">多语言</span>
+                        </div>
+                    </div>
+                    <p class="model-description" title="阿里通义千问旗舰大模型，支持多语言理解与生成，广泛应用于智能问答、内容生成等领域。">阿里通义千问旗舰大模型，支持多语言理解与生成，广泛应用于智能问答、内容生成等领域。</p>
+                    <div class="model-actions">
+                        <button class="action-btn secondary" onclick="showModelDetail('qwen72b', '🤖', '通义千问 Qwen-72B', ['通用', '多语言'], '通义千问', '通义千问Qwen-72B是阿里云推出的旗舰级大语言模型，拥有72B参数规模，在推理能力和通用能力方面达到业界SOTA水平。模型实现了思考模式和非思考模式的有效融合，可在对话中灵活切换，显著提升了复杂问题的解决能力。在汽车行业应用中，模型表现出色，能够处理多语言技术文档、进行深度技术分析，是汽车行业国际化发展的强大AI助手。')">查看详情</button>
+                        <button class="action-btn secondary" onclick="window.location.href='api-docs.html'">API参考</button>
+                        <button class="action-btn primary" onclick="handleExperience('qwen72b')">立即体验</button>
+                    </div>
+                </div>
+                <!-- 通义千问 Qwen-1.8B -->
+                <div class="model-card" data-vendor="qianwen">
+                    <div class="model-header">
+                        <div class="model-logo">🤖</div>
+                        <div class="model-info">
+                            <h3>通义千问 Qwen-1.8B</h3>
+                            <span class="model-source">通义千问</span>
+                        </div>
+                        <div class="model-tags">
+                            <span class="tag">轻量</span>
+                            <span class="tag">对话</span>
+                        </div>
+                    </div>
+                    <p class="model-description" title="轻量级模型，适合移动端、边缘端部署，响应速度快，资源消耗低。">轻量级模型，适合移动端、边缘端部署，响应速度快，资源消耗低。</p>
+                    <div class="model-actions">
+                        <button class="action-btn secondary" onclick="showModelDetail('qwen1.8b', '🤖', '通义千问 Qwen-1.8B', ['轻量', '对话'], '通义千问', '通义千问Qwen-1.8B是专为移动端和边缘计算设计的轻量级大语言模型，仅有1.8B参数，但保持了优秀的对话和推理能力。模型响应速度快，资源消耗低，特别适合在车载系统、移动应用等资源受限的环境中部署。在汽车行业，可用于实时语音助手、车载信息查询、移动端客户服务等场景，为用户提供快速、便捷的AI服务体验。')">查看详情</button>
+                        <button class="action-btn secondary" onclick="window.location.href='api-docs.html'">API参考</button>
+                        <button class="action-btn primary" onclick="handleExperience('qwen1.8b')">立即体验</button>
+                    </div>
+                </div>
+                <!-- DeepSeek-V2 -->
+                <div class="model-card" data-vendor="deepseek">
+                    <div class="model-header">
+                        <div class="model-logo">🦾</div>
+                        <div class="model-info">
+                            <h3>DeepSeek-V2</h3>
+                            <span class="model-source">DeepSeek</span>
+                        </div>
+                        <div class="model-tags">
+                            <span class="tag">多模态</span>
+                            <span class="tag">推理</span>
+                        </div>
+                    </div>
+                    <p class="model-description" title="支持文本、图像等多模态输入，适合复杂场景的智能分析与推理。">支持文本、图像等多模态输入，适合复杂场景的智能分析与推理。</p>
+                    <div class="model-actions">
+                        <button class="action-btn secondary" onclick="showModelDetail('deepseekv2', '🦾', 'DeepSeek-V2', ['多模态', '推理'], 'DeepSeek', 'DeepSeek-V2是新一代多模态大语言模型，具备强大的文本和图像联合理解能力。模型能够同时处理文本描述和图像信息，进行深度推理和分析。在汽车行业中，模型特别适用于汽车零件识别、故障诊断、技术文档解读等场景。通过多模态理解，模型能够分析汽车图片、技术图纸，结合文本描述进行综合判断，为汽车维修、设计、检测等提供智能化支持。')">查看详情</button>
+                        <button class="action-btn secondary" onclick="window.location.href='api-docs.html'">API参考</button>
+                        <button class="action-btn primary" onclick="handleExperience('deepseekv2')">立即体验</button>
+                    </div>
+                </div>
+                <!-- DeepSeek-MoE -->
+                <div class="model-card" data-vendor="deepseek">
+                    <div class="model-header">
+                        <div class="model-logo">🦾</div>
+                        <div class="model-info">
+                            <h3>DeepSeek-MoE</h3>
+                            <span class="model-source">DeepSeek</span>
+                        </div>
+                        <div class="model-tags">
+                            <span class="tag">MoE</span>
+                            <span class="tag">高效</span>
+                        </div>
+                    </div>
+                    <p class="model-description" title="Mixture-of-Experts架构，推理高效，适合大规模并发场景。">Mixture-of-Experts架构，推理高效，适合大规模并发场景。</p>
+                    <div class="model-actions">
+                        <button class="action-btn secondary" onclick="showModelDetail('deepseekmoe', '🦾', 'DeepSeek-MoE', ['MoE', '高效'], 'DeepSeek', 'DeepSeek-MoE采用先进的Mixture-of-Experts架构，通过专家路由机制实现高效的推理处理。模型在保持高质量输出的同时，显著提升了推理速度和并发处理能力。在汽车行业大规模应用中，模型能够同时处理多个用户的查询请求，为汽车制造商、经销商、维修中心等提供高效的AI服务。特别适合需要高并发处理的汽车客服系统、数据分析平台等场景。')">查看详情</button>
+                        <button class="action-btn secondary" onclick="window.location.href='api-docs.html'">API参考</button>
+                        <button class="action-btn primary" onclick="handleExperience('deepseekmoe')">立即体验</button>
+                    </div>
+                </div>
+                <!-- 智谱GLM-4 -->
+                <div class="model-card" data-vendor="glm">
+                    <div class="model-header">
+                        <div class="model-logo">🧠</div>
+                        <div class="model-info">
+                            <h3>智谱GLM-4</h3>
+                            <span class="model-source">智谱AI</span>
+                        </div>
+                        <div class="model-tags">
+                            <span class="tag">通用</span>
+                            <span class="tag">代码</span>
+                        </div>
+                    </div>
+                    <p class="model-description" title="智谱AI最新一代通用大模型，支持代码生成、推理、知识问答等多场景。">智谱AI最新一代通用大模型，支持代码生成、推理、知识问答等多场景。</p>
+                    <div class="model-actions">
+                        <button class="action-btn secondary" onclick="showModelDetail('glm4', '🧠', '智谱GLM-4', ['通用', '代码'], '智谱AI', '智谱GLM-4是智谱AI推出的最新一代通用大语言模型，在代码生成、推理能力、知识问答等方面表现卓越。模型特别在代码理解和生成方面能力突出，支持多种编程语言，能够协助开发者进行汽车软件开发、系统集成、自动化测试等任务。在汽车行业，模型可用于车载系统开发、汽车软件测试、智能驾驶算法优化等专业场景，为汽车技术团队提供强大的AI编程助手。')">查看详情</button>
+                        <button class="action-btn secondary" onclick="window.location.href='api-docs.html'">API参考</button>
+                        <button class="action-btn primary" onclick="handleExperience('glm4')">立即体验</button>
+                    </div>
+                </div>
+                <!-- 千帆文心一言 -->
+                <div class="model-card" data-vendor="qianfan">
+                    <div class="model-header">
+                        <div class="model-logo">🌊</div>
+                        <div class="model-info">
+                            <h3>千帆文心一言</h3>
+                            <span class="model-source">千帆</span>
+                        </div>
+                        <div class="model-tags">
+                            <span class="tag">通用</span>
+                            <span class="tag">多语言</span>
+                        </div>
+                    </div>
+                    <p class="model-description" title="百度千帆平台主力大模型，支持多语言、知识问答、内容生成等。">百度千帆平台主力大模型，支持多语言、知识问答、内容生成等。</p>
+                    <div class="model-actions">
+                        <button class="action-btn secondary" onclick="showModelDetail('qianfan', '🌊', '千帆文心一言', ['通用', '多语言'], '千帆', '千帆文心一言是百度千帆平台的核心大语言模型，具备强大的多语言理解和生成能力。模型支持50+语言，在跨语言知识迁移、多语言技术文档理解等方面表现优异。在汽车行业国际化发展中，模型能够处理多语言的技术规范、用户手册、维修指南等文档，为全球汽车市场提供本地化的AI服务。特别适用于跨国汽车企业的多语言客服、技术文档翻译、国际市场分析等场景。')">查看详情</button>
+                        <button class="action-btn secondary" onclick="window.location.href='api-docs.html'">API参考</button>
+                        <button class="action-btn primary" onclick="handleExperience('qianfan')">立即体验</button>
+                    </div>
+                </div>
+                <!-- 智谱GLM-4 Code -->
+                <div class="model-card" data-vendor="glm">
+                    <div class="model-header">
+                        <div class="model-logo">🧠</div>
+                        <div class="model-info">
+                            <h3>智谱GLM-4 Code</h3>
+                            <span class="model-source">智谱AI</span>
+                        </div>
+                        <div class="model-tags">
+                            <span class="tag">代码</span>
+                            <span class="tag">推理</span>
+                        </div>
+                    </div>
+                    <p class="model-description" title="专注于代码生成与理解，适合开发者和自动化场景。">专注于代码生成与理解，适合开发者和自动化场景。</p>
+                    <div class="model-actions">
+                        <button class="action-btn secondary" onclick="showModelDetail('glm4code', '🧠', '智谱GLM-4 Code', ['代码', '推理'], '智谱AI', '智谱GLM-4 Code是专为代码生成和理解设计的专业大语言模型，在编程语言理解、代码生成、代码审查等方面表现卓越。模型支持Python、C++、Java、JavaScript等主流编程语言，能够协助开发者进行汽车软件开发、系统架构设计、算法优化等专业任务。在汽车行业，模型特别适用于车载系统开发、自动驾驶算法实现、汽车软件测试自动化等场景，为汽车技术团队提供专业的AI编程助手，提升开发效率和质量。')">查看详情</button>
+                        <button class="action-btn secondary" onclick="window.location.href='api-docs.html'">API参考</button>
+                        <button class="action-btn primary" onclick="handleExperience('glm4code')">立即体验</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 体验中心 -->
+        <section id="experience" class="content-section">
+            <div class="section-header">
+                <h1>体验中心</h1>
+                <p>在线体验大模型能力</p>
+            </div>
+
+            <div class="experience-container">
+                <div class="chat-interface">
+                    <div class="chat-header">
+                        <h3>智能对话</h3>
+                        <div class="model-selector">
+                            <select class="model-select">
+                                <option value="cangjie8b">仓颉大模型 8B</option>
+                                <option value="cangjie32b">仓颉大模型 32B</option>
+                                <option value="qwen72b">通义千问 Qwen-72B</option>
+                                <option value="qwen1.8b">通义千问 Qwen-1.8B</option>
+                                <option value="deepseekv2">DeepSeek-V2</option>
+                                <option value="deepseekmoe">DeepSeek-MoE</option>
+                                <option value="glm4">智谱GLM-4</option>
+                                <option value="qianfan">千帆文心一言</option>
+                                <option value="glm4code">智谱GLM-4 Code</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message bot">
+                            <div class="message-avatar">🤖</div>
+                            <div class="message-content">
+                                <p>您好！我是汽车专家助手，有什么可以帮助您的吗？</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-area">
+                        <div class="input-container">
+                            <textarea id="chat-input" placeholder="请输入您的问题..." class="chat-textarea"></textarea>
+                            <button id="send-btn" class="send-btn">发送</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="advanced-settings">
+                    <h3>高级设置</h3>
+                    <div class="setting-group-title">生成参数</div>
+                    <div class="form-group">
+                        <label>system <span class="help-icon" data-tooltip="系统人设\n如：假如你是买车客服">?</span></label>
+                        <input id="config-system" maxlength="20" placeholder="系统人设，20字以内" style="width:180px;">
+                    </div>
+                    <div class="form-group">
+                        <label>top_p <span class="help-icon" data-tooltip="控制核采样方法的概率阈值\n取值越大，生成的随机性越高。">?</span></label>
+                        <input id="config-top_p" type="number" min="0.0001" max="1" step="0.0001" style="width:90px;"> 
+                        <input id="slider-top_p" type="range" min="0.0001" max="1" step="0.0001" style="width:120px;">
+                    </div>
+                    <div class="form-group">
+                        <label>stop <span class="help-icon" data-tooltip="用于控制生成时遇到某些内容则停止\n可传入多个字符串">?</span></label>
+                        <div id="stop-list"></div>
+                        <button type="button" class="action-btn secondary" onclick="addStopItem()">+ 新增</button>
+                    </div>
+                    <div class="form-group">
+                        <label>temperature <span class="help-icon" data-tooltip="控制生成随机性和多样性\n范围(0,2)。建议该参数和top_p只设置1个。">?</span></label>
+                        <input id="config-temperature" type="number" min="0" max="1.9999" step="0.0001" style="width:90px;"> 
+                        <input id="slider-temperature" type="range" min="0" max="1.9999" step="0.0001" style="width:120px;">
+                    </div>
+                    <div class="form-group">
+                        <label>enable_search <span class="help-icon" data-tooltip="是否参考搜索的结果\n默认false">?</span></label>
+                        <label class="switch">
+                            <input id="config-enable_search" type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>thinking_budget <span class="help-icon" data-tooltip="推理预算\n控制推理步数\n范围1~32768">?</span></label>
+                        <input id="config-thinking_budget" type="number" min="1" max="32768" step="1" style="width:90px;"> 
+                        <input id="slider-thinking_budget" type="range" min="1" max="32768" step="1" style="width:120px;">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AppKey管理 -->
+        <section id="appkey" class="content-section">
+            <div class="section-header">
+                <h1>AppKey管理</h1>
+                <p>管理您的API访问密钥</p>
+            </div>
+            <div class="appkey-container">
+                <div class="appkey-actions" style="margin-bottom:18px;display:flex;gap:16px;align-items:center;">
+                    <button class="create-key-btn">创建新Key</button>
+                    <div class="key-search">
+                        <input type="text" placeholder="搜索Key..." class="search-input">
+                    </div>
+                </div>
+                <table class="appkey-table" style="width:100%;background:#fff;border-radius:10px;box-shadow:0 2px 12px rgba(30,64,175,0.06);overflow:hidden;">
+                    <thead style="background:#F1F5F9;">
+                        <tr>
+                            <th>APPID</th>
+                            <th>API Key</th>
+                            <th>所属组织</th>
+                            <th>归属账号</th>
+                            <th>描述</th>
+                            <th>开通时间</th>
+                            <th>账号类型</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appkey-table-body">
+                        <tr>
+                            <td>app-123456</td>
+                            <td>sk-xxxxxxxxxxxxxxxxxxxxxxxx</td>
+                            <td>汽车之家科技有限公司</td>
+                            <td>138****8888</td>
+                            <td>生产环境主Key</td>
+                            <td>2024年06月01日</td>
+                            <td>正式账号</td>
+                            <td>
+                                <button class="action-btn" onclick="editKeyDesc(this)">编辑</button>
+                                <button class="action-btn danger" disabled>删除</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>app-654321</td>
+                            <td>sk-testxxxxxxxxxxxxxxxxxx</td>
+                            <td>测试组织</td>
+                            <td>test@autohome.com</td>
+                            <td>测试环境Key</td>
+                            <td>2024年05月20日</td>
+                            <td>测试账号</td>
+                            <td>
+                                <button class="action-btn" onclick="editKeyDesc(this)">编辑</button>
+                                <button class="action-btn danger" disabled>删除</button>
+                            </td>
+                        </tr>
+                        <!-- 更多数据行... -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 数据统计 -->
+        <section id="statistics" class="content-section">
+            <div class="section-header">
+                <h1>数据统计</h1>
+                <p>查看模型使用情况和性能指标</p>
+            </div>
+            <div class="stats-filter" style="margin-bottom:24px;display:flex;align-items:center;gap:16px;">
+                <label>时间范围：</label>
+                <input type="date" id="stats-date-start"> - <input type="date" id="stats-date-end">
+                <button class="action-btn secondary" onclick="filterStats()">筛选</button>
+            </div>
+            <div class="stats-cards" style="display:flex;gap:24px;margin-bottom:32px;">
+                <div class="stat-card">
+                    <div class="stat-title">调用总量（次数）</div>
+                    <div class="stat-value" id="stat-total-calls">1,234,567</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">调用总 tokens</div>
+                    <div class="stat-value" id="stat-total-tokens">8,888,888</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">剩余 tokens</div>
+                    <div class="stat-value" id="stat-remaining-tokens">2,345,678</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">剩余金额</div>
+                    <div class="stat-value" id="stat-remaining-balance">¥ 1,234.56</div>
+                </div>
+            </div>
+            <div class="stats-summary" style="margin-bottom:18px;display:flex;gap:32px;">
+                <div>调用接口数：<span id="stat-api-count">12</span></div>
+                <div>调用总量：<span id="stat-total-calls2">1,234,567</span></div>
+                <div>消耗金额/tokens：<span id="stat-consume">¥ 2,345.67 / 6,666,666</span></div>
+                <div>账户余额：<span id="stat-balance">¥ 1,234.56</span></div>
+            </div>
+            <table class="stats-table" style="width:100%;background:#fff;border-radius:10px;box-shadow:0 2px 12px rgba(30,64,175,0.06);overflow:hidden;">
+                <thead style="background:#F1F5F9;">
+                    <tr>
+                        <th>模型名称</th>
+                        <th>调用总量</th>
+                        <th>调用失败率</th>
+                        <th>消耗金额</th>
+                        <th>输入tokens</th>
+                        <th>输出tokens</th>
+                        <th>试用时间</th>
+                    </tr>
+                </thead>
+                <tbody id="stats-table-body">
+                    <tr>
+                        <td>仓颉大模型 8B</td>
+                        <td>123,456</td>
+                        <td>0.12%</td>
+                        <td>¥ 234.56</td>
+                        <td>1,234,567</td>
+                        <td>2,345,678</td>
+                        <td>2024-06-01 ~ 2024-06-30</td>
+                    </tr>
+                    <tr>
+                        <td>通义千问 Qwen-72B</td>
+                        <td>88,888</td>
+                        <td>0.09%</td>
+                        <td>¥ 123.45</td>
+                        <td>888,888</td>
+                        <td>1,111,111</td>
+                        <td>2024-06-01 ~ 2024-06-30</td>
+                    </tr>
+                    <!-- 更多数据行... -->
+                </tbody>
+            </table>
+        </section>
+
+        <!-- API文档 -->
+        <section id="api-docs" class="content-section">
+            <div class="section-header">
+                <h1>API文档</h1>
+                <p>大模型API接口文档与使用指南</p>
+                <button class="action-btn primary" onclick="showApiApplyModal()" style="margin-top: 16px;">
+                    📝 API申请
+                </button>
+            </div>
+
+            <div class="api-docs-container">
+                <!-- API概览 -->
+                <div class="api-overview">
+                    <h2>API概览</h2>
+                    <p>仓颉大模型平台提供RESTful API接口，支持多种大模型的调用。通过简单的HTTP请求，您可以轻松集成大模型能力到您的应用中。</p>
+                    
+                    <div class="api-features">
+                        <div class="feature-item">
+                            <span class="feature-icon">🚀</span>
+                            <h3>快速接入</h3>
+                            <p>简单的API调用，快速集成大模型能力</p>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">🔒</span>
+                            <h3>安全可靠</h3>
+                            <p>企业级安全防护，数据加密传输</p>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">📊</span>
+                            <h3>实时监控</h3>
+                            <p>调用量统计、性能监控、错误追踪</p>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">💰</span>
+                            <h3>按量计费</h3>
+                            <p>按实际调用量计费，成本可控</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 认证方式 -->
+                <div class="api-section">
+                    <h2>认证方式</h2>
+                    <p>API使用AppKey进行身份认证，请在请求头中包含您的AppKey：</p>
+                    <div class="code-block">
+                        <pre><code>Authorization: Bearer YOUR_APP_KEY</code></pre>
+                    </div>
+                </div>
+
+                <!-- 基础接口 -->
+                <div class="api-section">
+                    <h2>基础接口</h2>
+                    
+                    <div class="api-endpoint">
+                        <h3>聊天对话接口</h3>
+                        <div class="endpoint-info">
+                            <span class="method post">POST</span>
+                            <span class="url">/v1/chat/completions</span>
+                        </div>
+                        <p>用于与模型进行多轮对话，支持流式输出。</p>
+                        
+                        <h4>请求参数</h4>
+                        <div class="code-block">
+                            <pre><code>{
+  "model": "cangjie-8b-v2.1.0",
+  "messages": [
+    {
+      "role": "user",
+      "content": "你好，请介绍一下汽车保养的基本知识"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 2048,
+  "stream": false
+}</code></pre>
+                        </div>
+                        
+                        <h4>响应示例</h4>
+                        <div class="code-block">
+                            <pre><code>{
+  "id": "chatcmpl-123456789",
+  "object": "chat.completion",
+  "created": 1677652288,
+  "model": "cangjie-8b-v2.1.0",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "汽车保养是确保车辆正常运行和延长使用寿命的重要环节..."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 15,
+    "completion_tokens": 120,
+    "total_tokens": 135
+  }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="api-endpoint">
+                        <h3>文本生成接口</h3>
+                        <div class="endpoint-info">
+                            <span class="method post">POST</span>
+                            <span class="url">/v1/completions</span>
+                        </div>
+                        <p>用于文本补全和生成任务。</p>
+                        
+                        <h4>请求参数</h4>
+                        <div class="code-block">
+                            <pre><code>{
+  "model": "cangjie-8b-v2.1.0",
+  "prompt": "请写一段关于新能源汽车的介绍：",
+  "max_tokens": 500,
+  "temperature": 0.8
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 模型列表 -->
+                <div class="api-section">
+                    <h2>可用模型</h2>
+                    <div class="models-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>模型名称</th>
+                                    <th>模型ID</th>
+                                    <th>参数规模</th>
+                                    <th>上下文长度</th>
+                                    <th>适用场景</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>仓颉大模型 8B</td>
+                                    <td>cangjie-8b-v2.1.0</td>
+                                    <td>8B</td>
+                                    <td>32K tokens</td>
+                                    <td>对话、问答、内容生成</td>
+                                </tr>
+                                <tr>
+                                    <td>仓颉大模型 32B</td>
+                                    <td>cangjie-32b-v1.2.0</td>
+                                    <td>32B</td>
+                                    <td>128K tokens</td>
+                                    <td>复杂推理、深度分析</td>
+                                </tr>
+                                <tr>
+                                    <td>通义千问 Qwen-72B</td>
+                                    <td>qwen-72b-v3.0.0</td>
+                                    <td>72B</td>
+                                    <td>128K tokens</td>
+                                    <td>多语言、通用任务</td>
+                                </tr>
+                                <tr>
+                                    <td>通义千问 Qwen-1.8B</td>
+                                    <td>qwen-1.8b-v2.1.0</td>
+                                    <td>1.8B</td>
+                                    <td>8K tokens</td>
+                                    <td>轻量级应用、移动端</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 错误码 -->
+                <div class="api-section">
+                    <h2>错误码说明</h2>
+                    <div class="error-codes">
+                        <div class="error-item">
+                            <span class="error-code">400</span>
+                            <div class="error-info">
+                                <h4>Bad Request</h4>
+                                <p>请求参数错误或格式不正确</p>
+                            </div>
+                        </div>
+                        <div class="error-item">
+                            <span class="error-code">401</span>
+                            <div class="error-info">
+                                <h4>Unauthorized</h4>
+                                <p>AppKey无效或已过期</p>
+                            </div>
+                        </div>
+                        <div class="error-item">
+                            <span class="error-code">429</span>
+                            <div class="error-info">
+                                <h4>Too Many Requests</h4>
+                                <p>请求频率超限，请稍后重试</p>
+                            </div>
+                        </div>
+                        <div class="error-item">
+                            <span class="error-code">500</span>
+                            <div class="error-info">
+                                <h4>Internal Server Error</h4>
+                                <p>服务器内部错误，请稍后重试</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SDK示例 -->
+                <div class="api-section">
+                    <h2>SDK示例</h2>
+                    
+                    <div class="sdk-example">
+                        <h3>Python SDK</h3>
+                        <div class="code-block">
+                            <pre><code>import requests
+
+url = "https://api.cangjie.ai/v1/chat/completions"
+headers = {
+    "Authorization": "Bearer YOUR_APP_KEY",
+    "Content-Type": "application/json"
+}
+
+data = {
+    "model": "cangjie-8b-v2.1.0",
+    "messages": [
+        {"role": "user", "content": "你好"}
+    ]
+}
+
+response = requests.post(url, headers=headers, json=data)
+print(response.json())</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="sdk-example">
+                        <h3>JavaScript SDK</h3>
+                        <div class="code-block">
+                            <pre><code>const response = await fetch('https://api.cangjie.ai/v1/chat/completions', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_APP_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'cangjie-8b-v2.1.0',
+    messages: [
+      { role: 'user', content: '你好' }
+    ]
+  })
+});
+
+const data = await response.json();
+console.log(data);</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模型评测榜单平台首页 -->
+        <section id="model-eval-home" class="content-section">
+            <nav class="navbar">
+                <div class="nav-container">
+                    <div class="logo">
+                        <img src="logo.png" alt="Logo" class="logo-img">
+                        <span class="logo-text">模型评测榜单</span>
+                    </div>
+                    <ul class="nav-menu">
+                        <li><a href="#" class="active">首页</a></li>
+                        <li><a href="#eval-list">评测榜单</a></li>
+                        <li><a href="#eval-dataset">评测数据集</a></li>
+                        <li><a href="about.html">关于我们</a></li>
+                        <li><a href="#apply">我要上榜</a></li>
+                        <li><a href="#" onclick="openEvalLoginModal()">登录</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="eval-content" style="max-width:1200px;margin:48px auto 0 auto;padding:32px 24px;background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(30,64,175,0.08);">
+                <h1 style="font-size:2.2rem;font-weight:700;color:#1E40AF;margin-bottom:24px;">汽车大模型评测榜单平台</h1>
+                <div style="margin-bottom:32px;color:#374151;font-size:1.1rem;">聚焦汽车行业大模型，权威、公开、透明的模型评测与榜单发布平台。支持多维度评测、丰富测试提示词和多样化评测方式，助力行业模型能力对比与创新发展。</div>
+                <div class="eval-section" style="margin-bottom:36px;">
+                    <h2 class="setting-group-title">评测维度表</h2>
+                    <table style="width:100%;background:#F8FAFC;border-radius:8px;overflow:hidden;">
+                        <thead style="background:#F1F5F9;">
+                            <tr>
+                                <th>维度</th><th>说明</th><th>举例</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>知识问答</td><td>汽车行业知识覆盖与准确性</td><td>"什么是混合动力汽车？"</td></tr>
+                            <tr><td>多轮对话</td><td>上下文理解与连续对话能力</td><td>"我刚才问的那个品牌再详细点"</td></tr>
+                            <tr><td>推理与逻辑</td><td>复杂问题推理与逻辑链条</td><td>"请分析电动车与燃油车的优缺点"</td></tr>
+                            <tr><td>生成能力</td><td>内容生成、文案创作能力</td><td>"写一段汽车广告文案"</td></tr>
+                            <tr><td>多模态理解</td><td>图片/表格/文本等多模态输入理解</td><td>"识别上传的汽车零件图片"</td></tr>
+                            <tr><td>安全与合规</td><td>输出内容安全、无敏感违规</td><td>"请介绍某品牌的负面新闻"</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="eval-section" style="margin-bottom:36px;">
+                    <h2 class="setting-group-title">测试提示词</h2>
+                    <ul style="margin:0 0 0 18px;padding:0;color:#374151;">
+                        <li>"请解释什么是自动驾驶L3级？"</li>
+                        <li>"新能源汽车的电池寿命一般是多少年？"</li>
+                        <li>"请对比分析SUV和轿车的优缺点"</li>
+                        <li>"上传一张汽车仪表盘图片，识别故障灯"</li>
+                        <li>"请生成一段汽车保养小贴士"</li>
+                        <li>"请用表格列出2024年主流新能源车型"</li>
+                    </ul>
+                </div>
+                <div class="eval-section">
+                    <h2 class="setting-group-title">评测方式</h2>
+                    <ul style="margin:0 0 0 18px;padding:0;color:#374151;">
+                        <li>自动化脚本批量评测（API自动调用）</li>
+                        <li>人工专家标注与主观打分</li>
+                        <li>多模态输入（文本、图片、表格）混合评测</li>
+                        <li>开放数据集与标准答案对比</li>
+                        <li>评测结果公开透明，支持复现</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- 登录弹窗 -->
+            <div id="eval-login-modal" class="modal" style="display:none;">
+                <div class="modal-content" style="max-width:400px;">
+                    <div class="modal-header"><span class="modal-title">登录</span></div>
+                    <div class="modal-body">
+                        <input type="text" placeholder="手机号/邮箱" style="width:100%;margin-bottom:16px;padding:10px 12px;border-radius:8px;border:1px solid #E2E8F0;">
+                        <input type="password" placeholder="密码" style="width:100%;margin-bottom:16px;padding:10px 12px;border-radius:8px;border:1px solid #E2E8F0;">
+                    </div>
+                    <div class="modal-footer" style="text-align:right;">
+                        <button class="action-btn secondary" onclick="closeEvalLoginModal()">取消</button>
+                        <button class="action-btn primary" onclick="closeEvalLoginModal()">登录</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 模型详情弹窗 -->
+    <div id="model-detail-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-back" onclick="closeModelDetail()" style="font-size:16px;margin-right:16px;background:none;border:none;cursor:pointer;">&lt; 返回模型广场</button>
+                <span class="modal-title" id="modal-model-title"></span>
+                <button class="modal-close" onclick="closeModelDetail()">×</button>
+            </div>
+            <div class="modal-nav">
+                <span class="modal-tab active" id="tab-intro" onclick="switchModelTab('intro')">模型介绍</span>
+                <span class="modal-tab" id="tab-version" onclick="switchModelTab('version')">版本信息</span>
+            </div>
+            <div class="modal-body">
+                <div id="model-intro" class="modal-section">
+                    <div class="model-detail-header">
+                        <span class="model-detail-logo" id="modal-model-logo"></span>
+                        <span class="model-detail-name" id="modal-model-name"></span>
+                        <span class="model-detail-tags" id="modal-model-tags"></span>
+                        <span class="model-detail-source" id="modal-model-source"></span>
+                    </div>
+                    <div class="model-detail-desc" id="modal-model-desc"></div>
+                    <div class="model-detail-limit" id="modal-model-limit" style="margin-top:16px;"></div>
+                </div>
+                <div id="model-version" class="modal-section" style="display:none; max-height:300px; overflow-y:auto;">
+                    <div id="modal-version-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模型详情嵌入区，初始隐藏 -->
+    <div id="model-detail-embed" style="display:none;"></div>
+
+    <!-- API申请弹窗 -->
+    <div id="api-apply-modal" class="modal" style="display:none;">
+        <div class="modal-content" style="max-width:500px;">
+            <div class="modal-header">
+                <span class="modal-title">API申请</span>
+                <button class="modal-close" onclick="closeApiApplyModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="api-apply-form">
+                    <div class="form-group">
+                        <label>手机号 <span style="color: #ef4444;">*</span></label>
+                        <input type="tel" id="apply-phone" required placeholder="请输入手机号">
+                    </div>
+                    <div class="form-group">
+                        <label>邮箱 <span style="color: #ef4444;">*</span></label>
+                        <input type="email" id="apply-email" required placeholder="请输入邮箱">
+                    </div>
+                    <div class="form-group">
+                        <label>组织名称 <span style="color: #ef4444;">*</span></label>
+                        <input type="text" id="apply-organization" required placeholder="请输入组织名称">
+                    </div>
+                    <div class="form-group">
+                        <label>账号类型 <span style="color: #ef4444;">*</span></label>
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="account-type" value="trial" checked>
+                                <span class="radio-label">试用</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="account-type" value="formal">
+                                <span class="radio-label">正式调用</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>用途说明 <span style="color: #ef4444;">*</span></label>
+                        <textarea id="apply-purpose" required placeholder="请详细描述您的使用场景和用途" rows="4"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer" style="text-align:right;">
+                <button class="action-btn secondary" onclick="closeApiApplyModal()">取消</button>
+                <button class="action-btn primary" onclick="submitApiApply()">提交申请</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 高级配置弹窗，初始隐藏 -->
+    <div id="advanced-config-modal" class="modal" style="display:none;">
+        <div class="modal-content" style="max-width:520px;">
+            <div class="modal-header">
+                <span class="modal-title">高级配置</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>模型名称：</label>
+                    <span id="config-model-name"></span>
+                </div>
+                <div class="form-group">
+                    <label>system <span class="help-icon" data-tooltip="系统人设\n如：假如你是买车客服">?</span></label>
+                    <input id="config-system" maxlength="20" placeholder="系统人设，20字以内">
+                </div>
+                <div class="form-group">
+                    <label>top_p <span class="help-icon" data-tooltip="控制核采样方法的概率阈值\n取值越大，生成的随机性越高。">?</span></label>
+                    <input id="config-top_p" type="number" min="0.0001" max="1" step="0.0001" style="width:90px;"> 
+                    <input id="slider-top_p" type="range" min="0.0001" max="1" step="0.0001" style="width:120px;">
+                </div>
+                <div class="form-group">
+                    <label>stop <span class="help-icon" data-tooltip="用于控制生成时遇到某些内容则停止\n可传入多个字符串">?</span></label>
+                    <div id="stop-list"></div>
+                    <button type="button" class="action-btn secondary" onclick="addStopItem()">+ 新增</button>
+                </div>
+                <div class="form-group">
+                    <label>temperature <span class="help-icon" data-tooltip="控制生成随机性和多样性\n范围(0,2)。建议该参数和top_p只设置1个。">?</span></label>
+                    <input id="config-temperature" type="number" min="0" max="1.9999" step="0.0001" style="width:90px;"> 
+                    <input id="slider-temperature" type="range" min="0" max="1.9999" step="0.0001" style="width:120px;">
+                </div>
+                <div class="form-group">
+                    <label>enable_search <span class="help-icon" data-tooltip="是否参考搜索的结果\n默认false">?</span></label>
+                    <label class="switch">
+                        <input id="config-enable_search" type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>thinking_budget <span class="help-icon" data-tooltip="推理预算\n控制推理步数\n范围1~32768">?</span></label>
+                    <input id="config-thinking_budget" type="number" min="1" max="32768" step="1" style="width:90px;"> 
+                    <input id="slider-thinking_budget" type="range" min="1" max="32768" step="1" style="width:120px;">
+                </div>
+                <div class="form-group">
+                    <label>max_tokens <span class="help-icon" title="控制生成内容的最大长度，单位为token。">?</span></label>
+                    <input id="config-max_tokens" type="number" min="1" max="32768" step="1" style="width:90px;"> 
+                    <input id="slider-max_tokens" type="range" min="1" max="32768" step="1" style="width:120px;">
+                </div>
+                <div class="form-group">
+                    <label>presence_penalty <span class="help-icon" title="正值会惩罚已出现过的token，增加多样性。">?</span></label>
+                    <input id="config-presence_penalty" type="number" min="-2" max="2" step="0.01" style="width:90px;"> 
+                    <input id="slider-presence_penalty" type="range" min="-2" max="2" step="0.01" style="width:120px;">
+                </div>
+                <div class="form-group">
+                    <label>frequency_penalty <span class="help-icon" title="正值会惩罚重复出现的token，减少重复。">?</span></label>
+                    <input id="config-frequency_penalty" type="number" min="-2" max="2" step="0.01" style="width:90px;"> 
+                    <input id="slider-frequency_penalty" type="range" min="-2" max="2" step="0.01" style="width:120px;">
+                </div>
+                <div class="form-group">
+                    <label>stream <span class="help-icon" title="是否开启流式输出，默认关闭。">?</span></label>
+                    <label class="switch">
+                        <input id="config-stream" type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>user <span class="help-icon" title="用于区分不同用户的请求。">?</span></label>
+                    <input id="config-user" maxlength="32" placeholder="用户标识">
+                </div>
+            </div>
+            <div class="modal-footer" style="text-align:right;">
+                <button class="action-btn secondary" onclick="closeConfigModal()">取消</button>
+                <button class="action-btn primary" onclick="confirmConfigModal()">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="maas.js"></script>
+</body>
+</html> 
