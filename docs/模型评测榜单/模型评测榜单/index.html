@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>模型评测榜单</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --main-bg: #232946;
+      --card-bg: #fff;
+      --main-blue: #3e5ba9;
+      --main-pink: #eebbc3;
+      --main-gray: #b8c1ec;
+      --text-main: #232946;
+      --text-light: #fff;
+      --shadow: 0 4px 24px rgba(30,40,90,0.10);
+    }
+    body {
+      margin: 0; font-family: 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+      background: var(--main-bg); color: var(--text-light);
+      font-size: 18px;
+    }
+    .navbar {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--main-bg); color: var(--text-light); padding: 0 48px; height: 68px;
+      border-bottom: 1px solid #2d3250;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .navbar .logo {
+      font-size: 28px; font-weight: bold; letter-spacing: 2px; color: var(--main-pink);
+      text-shadow: 0 2px 8px rgba(238,187,195,0.18);
+    }
+    .navbar .nav-links { display: flex; gap: 38px; }
+    .navbar .nav-links a, .navbar .login-btn {
+      color: var(--text-light); text-decoration: none; font-size: 18px; padding: 10px 18px; border-radius: 8px; transition: background 0.2s, color 0.2s;
+    }
+    .navbar .nav-links a:hover, .navbar .login-btn:hover { background: var(--main-blue); color: var(--main-pink); }
+    .navbar .login-btn {
+      background: var(--main-pink); color: var(--main-bg); font-weight: bold; cursor: pointer; border: none;
+      box-shadow: var(--shadow); font-size: 18px;
+    }
+    .banner {
+      background: linear-gradient(120deg, #232946 0%, #3e5ba9 60%, #b8c1ec 100%);
+      color: var(--text-light); text-align: center; padding: 90px 20px 60px 20px;
+      position: relative;
+    }
+    .banner h1 { font-size: 48px; margin-bottom: 18px; letter-spacing: 2px; }
+    .banner p { font-size: 22px; margin-bottom: 0; color: #f4f4f4; max-width: 700px; margin-left: auto; margin-right: auto; }
+    .board-section {
+      max-width: 1200px; margin: 0 auto 48px auto; background: var(--card-bg); border-radius: 22px; box-shadow: var(--shadow); padding: 36px 28px; color: var(--text-main); font-size: 17px; margin-top: -40px;
+    }
+    .board-title { font-size: 26px; color: var(--main-blue); margin-bottom: 24px; font-weight: bold; letter-spacing: 1px; }
+    .board-table-wrap { overflow-x: auto; max-height: 420px; overflow-y: auto; }
+    .board-table { width: 100%; border-collapse: collapse; font-size: 16px; min-width: 900px; }
+    .board-table th, .board-table td { border: 1px solid #e0e0e0; padding: 10px 12px; text-align: center; }
+    .board-table th { background: #f0f3fa; color: var(--main-blue); font-size: 17px; position: sticky; top: 0; z-index: 1; }
+    .board-table tbody tr:hover { background: #f6f8fa; }
+    .exp-btn {
+      background: var(--main-blue); color: #fff; border: none; border-radius: 8px; padding: 8px 22px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.18s;
+    }
+    .exp-btn:hover { background: var(--main-pink); color: var(--main-bg); }
+    .board-tabs {
+      display: flex;
+      gap: 18px;
+      margin-bottom: 18px;
+      margin-top: 8px;
+    }
+    .tab {
+      background: #f0f3fa;
+      color: #232946;
+      border-radius: 8px;
+      padding: 8px 22px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s;
+      border: 1.5px solid #e6e6e6;
+    }
+    .tab.active, .tab:hover {
+      background: var(--main-blue);
+      color: var(--main-pink);
+      border-color: var(--main-blue);
+    }
+    .rule-section {
+      max-width: 1200px; margin: 0 auto 48px auto; background: var(--card-bg); border-radius: 22px; box-shadow: var(--shadow); padding: 36px 28px; color: var(--text-main); font-size: 17px;
+    }
+    .rule-title { font-size: 24px; color: var(--main-blue); margin-bottom: 18px; font-weight: bold; }
+    .rule-list { margin-bottom: 18px; }
+    .rule-list li { margin-bottom: 8px; }
+    .rule-dimensions, .rule-methods, .rule-rules { margin-bottom: 18px; }
+    @media (max-width: 900px) {
+      .board-section, .rule-section { padding: 18px 4vw; }
+      .banner h1 { font-size: 32px; }
+      .banner p { font-size: 16px; }
+      .board-table { font-size: 14px; }
+    }
+    .beautiful-rule-section {
+      background: none;
+      box-shadow: none;
+      padding-top: 0;
+    }
+    .rule-cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      justify-content: space-between;
+      margin-top: 24px;
+    }
+    .rule-card-group {
+      flex: 1 1 320px;
+      min-width: 280px;
+      background: var(--card-bg);
+      border-radius: 18px;
+      box-shadow: 0 2px 16px rgba(30,40,90,0.08);
+      padding: 24px 18px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 0;
+    }
+    .rule-card-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--main-blue);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .rule-icon {
+      font-size: 22px;
+      vertical-align: middle;
+    }
+    .rule-card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .rule-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 14px 16px;
+      box-shadow: 0 1px 6px rgba(30,40,90,0.06);
+      font-size: 15px;
+      color: #232946;
+      border-left: 4px solid var(--main-blue);
+      transition: box-shadow 0.18s, border-color 0.18s;
+    }
+    .rule-card:hover {
+      box-shadow: 0 4px 18px rgba(62,91,169,0.13);
+      border-left: 4px solid var(--main-pink);
+    }
+    .rule-card-icon {
+      font-size: 22px;
+      margin-top: 2px;
+      color: var(--main-blue);
+      flex-shrink: 0;
+    }
+    .rule-card-desc {
+      color: #555;
+      font-size: 13px;
+      font-weight: normal;
+    }
+    @media (max-width: 1100px) {
+      .rule-cards-container {
+        flex-direction: column;
+        gap: 18px;
+      }
+      .rule-card-group {
+        min-width: 0;
+      }
+    }
+    .exp-btn-disabled {
+      background: #e0e0e0 !important;
+      color: #aaa !important;
+      cursor: not-allowed !important;
+      border: none;
+    }
+    .exp-btn-disabled:hover::after {
+      content: attr(title);
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      transform: translateX(-50%);
+      background: #232946;
+      color: #fff;
+      padding: 6px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      white-space: nowrap;
+      margin-top: 6px;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(30,40,90,0.13);
+    }
+    .exp-btn-disabled {
+      position: relative;
+    }
+    .modal-bg {
+      display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(35,41,70,0.45); z-index: 1000; align-items: center; justify-content: center;
+    }
+    .modal-bg.active { display: flex; }
+    .modal-login {
+      background: var(--card-bg); border-radius: 20px; padding: 40px 36px 32px 36px; min-width: 340px; box-shadow: 0 8px 32px rgba(30,40,90,0.18);
+      position: relative; color: var(--text-main); display: flex; flex-direction: column; align-items: stretch;
+    }
+    .modal-login h3 { margin-top: 0; color: var(--main-blue); font-size: 22px; text-align: center; }
+    .modal-login .close { position: absolute; right: 18px; top: 16px; font-size: 26px; color: #888; cursor: pointer; }
+    .modal-login input { width: 100%; padding: 13px; border: 1px solid #d0d0d0; border-radius: 8px; font-size: 16px; margin-bottom: 0; }
+    .get-code-btn {
+      background: var(--main-blue); color: #fff; border: none; border-radius: 8px; padding: 0 18px; font-size: 15px; cursor: pointer; height: 44px; transition: background 0.2s;
+    }
+    .get-code-btn:disabled { background: #ccc; cursor: not-allowed; }
+    .login-action-btn {
+      background: var(--main-pink); color: var(--main-bg); font-weight: bold; cursor: pointer; border: none;
+      box-shadow: var(--shadow); font-size: 18px; border-radius: 8px; padding: 13px 0; margin-top: 10px;
+    }
+    .login-action-btn:hover { background: var(--main-blue); color: var(--main-pink); }
+    @media (max-width: 600px) {
+      .modal-login { min-width: 0; width: 90vw; padding: 24px 8vw; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航栏 -->
+  <div class="navbar">
+    <div class="logo">模型评测榜单</div>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="dataset.html">评测数据集</a>
+      <a href="apply.html">我要上榜</a>
+    </div>
+    <button class="login-btn" onclick="showLoginModal()">登录</button>
+  </div>
+
+  <!-- 登录弹窗 -->
+  <div class="modal-bg" id="loginModal" style="display:none;">
+    <div class="modal-login">
+      <span class="close" onclick="hideLoginModal()">&times;</span>
+      <h3>手机号登录</h3>
+      <input type="tel" id="loginPhone" placeholder="请输入手机号" maxlength="11" style="margin-bottom:12px;">
+      <div style="display:flex; gap:10px; margin-bottom:12px;">
+        <input type="text" id="loginCode" placeholder="验证码" maxlength="6" style="flex:1;">
+        <button class="get-code-btn" onclick="getCode(this)">获取验证码</button>
+      </div>
+      <button class="login-action-btn" onclick="loginAction()">登录</button>
+    </div>
+  </div>
+
+  <!-- Banner区 -->
+  <div class="banner">
+    <h1>权威汽车大模型评测榜单</h1>
+    <p>本榜单聚焦于汽车领域大模型的综合能力评测，涵盖语义理解、专业知识、推理分析、多轮对话、生成能力与安全合规等多维度。通过标准化测试集与专家人工评测相结合，力求为行业和用户提供最权威、最透明、最具参考价值的模型能力排名。榜单数据定期更新，助力汽车智能化发展。</p>
+  </div>
+
+  <!-- 榜单列表区 -->
+  <div class="board-section">
+    <div class="board-title">榜单列表</div>
+    <div class="board-tabs" id="boardTabs">
+      <span class="tab active" data-key="score">综合得分</span>
+      <span class="tab" data-key="semantic">语义理解</span>
+      <span class="tab" data-key="knowledge">专业知识</span>
+      <span class="tab" data-key="qa">问答准确率</span>
+      <span class="tab" data-key="reasoning">推理能力</span>
+      <span class="tab" data-key="dialog">多轮对话</span>
+      <span class="tab" data-key="generation">生成能力</span>
+      <span class="tab" data-key="safety">安全合规</span>
+    </div>
+    <div class="board-table-wrap">
+      <table class="board-table" id="boardTable">
+        <thead>
+          <tr>
+            <th>模型名称</th>
+            <th>团队名称</th>
+            <th>发布日期</th>
+            <th>类型</th>
+            <th>参数量</th>
+            <th>综合得分</th>
+            <th>语义理解</th>
+            <th>专业知识</th>
+            <th>问答准确率</th>
+            <th>推理能力</th>
+            <th>多轮对话</th>
+            <th>生成能力</th>
+            <th>安全合规</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="boardTbody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 评测规则区 -->
+  <div class="rule-section beautiful-rule-section">
+    <div class="rule-title">评测规则</div>
+    <div class="rule-cards-container">
+      <!-- 评测维度卡片 -->
+      <div class="rule-card-group">
+        <div class="rule-card-title"><span class="rule-icon">📊</span> 评测维度</div>
+        <div class="rule-card-list">
+          <div class="rule-card"><span class="rule-card-icon">🧠</span><div><strong>语义理解能力</strong><br><span class="rule-card-desc">对汽车相关问题的理解和解析能力</span></div></div>
+          <div class="rule-card"><span class="rule-card-icon">📚</span><div><strong>专业知识覆盖</strong><br><span class="rule-card-desc">对汽车行业知识的掌握和覆盖广度</span></div></div>
+          <div class="rule-card"><span class="rule-card-icon">🎯</span><div><strong>问答准确率</strong><br><span class="rule-card-desc">针对汽车领域问题的回答准确性</span></div></div>
+          <div class="rule-card"><span class="rule-card-icon">🔎</span><div><strong>推理能力</strong><br><span class="rule-card-desc">对复杂汽车场景的推理和分析能力</span></div></div>
+          <div class="rule-card"><span class="rule-card-icon">💬</span><div><strong>多轮对话能力</strong><br><span class="rule-card-desc">连续多轮汽车相关对话的连贯性和准确性</span></div></div>
+          <div class="rule-card"><span class="rule-card-icon">✍️</span><div><strong>生成能力</strong><br><span class="rule-card-desc">针对汽车场景生成文本的流畅性和实用性</span></div></div>
+          <div class="rule-card"><span class="rule-card-icon">🛡️</span><div><strong>安全合规性</strong><br><span class="rule-card-desc">回答内容是否符合行业规范和安全要求</span></div></div>
+        </div>
+      </div>
+      <!-- 评测方式卡片 -->
+      <div class="rule-card-group">
+        <div class="rule-card-title"><span class="rule-icon">🛠️</span> 评测方式</div>
+        <div class="rule-card-list">
+          <div class="rule-card"><span class="rule-card-icon">🤖</span><div><strong>自动化评测</strong><br><span class="rule-card-desc">通过标准化测试集和自动评分脚本，对模型进行批量问答和评分。</span></div></div>
+          <div class="rule-card"><span class="rule-card-icon">👨‍🔬</span><div><strong>人工评测</strong><br><span class="rule-card-desc">邀请汽车领域专家对模型输出进行主观评价和打分。</span></div></div>
+          <div class="rule-card"><span class="rule-card-icon">🔄</span><div><strong>多轮对话测试</strong><br><span class="rule-card-desc">模拟真实用户多轮对话场景，考察模型的上下文理解和连贯性。</span></div></div>
+          <div class="rule-card"><span class="rule-card-icon">🚦</span><div><strong>安全合规性检测</strong><br><span class="rule-card-desc">检测模型输出是否存在不当、违规或不安全内容。</span></div></div>
+          <div class="rule-card"><span class="rule-card-icon">🌐</span><div><strong>开放式生成测试</strong><br><span class="rule-card-desc">考察模型在开放问题下的生成能力和创新性。</span></div></div>
+        </div>
+      </div>
+      <!-- 评测规则卡片 -->
+      <div class="rule-card-group">
+        <div class="rule-card-title"><span class="rule-icon">📜</span> 评测规则</div>
+        <div class="rule-card-list">
+          <div class="rule-card"><span class="rule-card-icon">⚖️</span><div><strong>公平性</strong><br><span class="rule-card-desc">所有参评模型需在相同测试环境下进行评测，保证公平性。</span></div></div>
+          <div class="rule-card"><span class="rule-card-icon">📏</span><div><strong>标准化</strong><br><span class="rule-card-desc">每个维度均有标准化评分细则，综合得分为各维度加权平均。</span></div></div>
+          <div class="rule-card"><span class="rule-card-icon">🆕</span><div><strong>数据更新</strong><br><span class="rule-card-desc">评测数据集定期更新，覆盖汽车行业最新知识与场景。</span></div></div>
+          <div class="rule-card"><span class="rule-card-icon">🔍</span><div><strong>过程透明</strong><br><span class="rule-card-desc">评测过程全程记录，部分结果公开，确保透明可信。</span></div></div>
+          <div class="rule-card"><span class="rule-card-icon">📅</span><div><strong>榜单更新</strong><br><span class="rule-card-desc">榜单每月更新，支持模型方申诉与复评。</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 榜单数据
+    const boardData = [
+      { name: '仓颉8B', team: '汽车之家', date: '2024-05-01', type: '对话生成', param: '120亿', score: 92.5, semantic: 94, knowledge: 93, qa: 91, reasoning: 92, dialog: 90, generation: 93, safety: 95 },
+      { name: 'CarMind', team: '车联AI', date: '2024-04-18', type: '知识问答', param: '80亿', score: 89.7, semantic: 90, knowledge: 91, qa: 89, reasoning: 88, dialog: 87, generation: 90, safety: 92 },
+      { name: 'DriveBrain', team: '未来出行', date: '2024-03-30', type: '多模态', param: '150亿', score: 87.2, semantic: 88, knowledge: 87, qa: 86, reasoning: 85, dialog: 84, generation: 88, safety: 89 },
+      { name: 'AutoExpert', team: '智驾联盟', date: '2024-02-15', type: '对话生成', param: '60亿', score: 85.9, semantic: 86, knowledge: 85, qa: 84, reasoning: 83, dialog: 82, generation: 86, safety: 87 },
+      { name: 'CarSense', team: '车智库', date: '2024-01-10', type: '知识问答', param: '45亿', score: 83.4, semantic: 83, knowledge: 82, qa: 81, reasoning: 80, dialog: 79, generation: 83, safety: 85 },
+      { name: 'AutoPilotAI', team: '自动驾驶实验室', date: '2023-12-20', type: '多模态', param: '100亿', score: 81.6, semantic: 81, knowledge: 80, qa: 79, reasoning: 78, dialog: 77, generation: 81, safety: 83 },
+    ];
+    // 渲染表格
+    function renderTable(sortKey = 'score') {
+      const tbody = document.getElementById('boardTbody');
+      const sorted = [...boardData].sort((a, b) => b[sortKey] - a[sortKey]);
+      tbody.innerHTML = sorted.map((row, idx) => `
+        <tr>
+          <td>${row.name}</td>
+          <td>${row.team}</td>
+          <td>${row.date}</td>
+          <td>${row.type}</td>
+          <td>${row.param}</td>
+          <td>${row.score}</td>
+          <td>${row.semantic}</td>
+          <td>${row.knowledge}</td>
+          <td>${row.qa}</td>
+          <td>${row.reasoning}</td>
+          <td>${row.dialog}</td>
+          <td>${row.generation}</td>
+          <td>${row.safety}</td>
+          <td>
+            ${idx === 0
+              ? `<button class='exp-btn' onclick="window.location.href='chat.html'">立即体验</button>`
+              : `<button class='exp-btn exp-btn-disabled' disabled title='该模型暂未开放体验'>立即体验</button>`}
+          </td>
+        </tr>
+      `).join('');
+    }
+    renderTable();
+    // Tab切换
+    document.getElementById('boardTabs').onclick = function(e) {
+      if(e.target.classList.contains('tab')) {
+        document.querySelectorAll('.board-tabs .tab').forEach(tab => tab.classList.remove('active'));
+        e.target.classList.add('active');
+        renderTable(e.target.dataset.key);
+      }
+    }
+    // 登录弹窗逻辑
+    function showLoginModal() {
+      document.getElementById('loginModal').style.display = 'flex';
+      setTimeout(() => document.getElementById('loginModal').classList.add('active'), 10);
+    }
+    function hideLoginModal() {
+      const modal = document.getElementById('loginModal');
+      modal.classList.remove('active');
+      setTimeout(() => { modal.style.display = 'none'; }, 200);
+    }
+    // 点击弹窗外关闭
+    document.addEventListener('mousedown', function(e) {
+      const modal = document.getElementById('loginModal');
+      if (modal && modal.classList.contains('active') && e.target === modal) hideLoginModal();
+    });
+    // 获取验证码按钮逻辑（仅前端演示）
+    function getCode(btn) {
+      btn.disabled = true;
+      let sec = 60;
+      btn.textContent = sec + 's';
+      const timer = setInterval(() => {
+        sec--;
+        btn.textContent = sec + 's';
+        if (sec <= 0) {
+          clearInterval(timer);
+          btn.disabled = false;
+          btn.textContent = '获取验证码';
+        }
+      }, 1000);
+    }
+    // 登录按钮逻辑（仅前端演示）
+    function loginAction() {
+      const phone = document.getElementById('loginPhone').value.trim();
+      const code = document.getElementById('loginCode').value.trim();
+      if (!/^1[3-9]\d{9}$/.test(phone)) {
+        alert('请输入有效的手机号');
+        return;
+      }
+      if (!/^\d{4,6}$/.test(code)) {
+        alert('请输入正确的验证码');
+        return;
+      }
+      alert('登录成功（演示）');
+      hideLoginModal();
+    }
+  </script>
+</body>
+</html> 

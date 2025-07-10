@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API文档 - 仓颉大模型平台</title>
+    <link rel="stylesheet" href="maas-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .api-docs-container { max-width: 800px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(30,64,175,0.06); padding: 40px; }
+        .api-docs-title { font-size: 2.2rem; font-weight: 700; color: #1E40AF; margin-bottom: 16px; }
+        .api-docs-section { margin-bottom: 32px; }
+        .api-docs-section h2 { font-size: 1.3rem; color: #1E293B; margin-bottom: 10px; }
+        .api-docs-section pre { background: #F8FAFC; border-radius: 8px; padding: 16px; font-size: 14px; overflow-x: auto; }
+        .api-docs-section ul { padding-left: 20px; }
+        .api-docs-section li { margin-bottom: 8px; color: #64748B; }
+        .api-apply-btn { background: linear-gradient(135deg, #1E40AF, #7C3AED); color: #fff; border: none; border-radius: 8px; padding: 12px 32px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 24px; }
+        .api-apply-btn:hover { opacity: 0.92; }
+        .modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.35); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .modal-content { background: #fff; border-radius: 12px; padding: 32px 32px 24px 32px; min-width: 340px; max-width: 90vw; box-shadow: 0 2px 12px rgba(30,64,175,0.10); position: relative; }
+        .modal-content h3 { margin-bottom: 18px; color: #1E40AF; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 500; color: #374151; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px 12px; border: 1px solid #E2E8F0; border-radius: 6px; font-size: 15px; }
+        .form-actions { display: flex; gap: 16px; justify-content: flex-end; margin-top: 18px; }
+        .btn-primary { background: #1E40AF; color: #fff; border: none; border-radius: 6px; padding: 8px 24px; font-weight: 500; cursor: pointer; }
+        .btn-secondary { background: #F1F5F9; color: #64748B; border: none; border-radius: 6px; padding: 8px 24px; font-weight: 500; cursor: pointer; }
+        .modal-close { position: absolute; top: 12px; right: 18px; font-size: 22px; color: #64748B; background: none; border: none; cursor: pointer; }
+        .toast { position: fixed; top: 40px; left: 50%; transform: translateX(-50%); background: #1E40AF; color: #fff; padding: 14px 32px; border-radius: 8px; font-size: 1.1rem; z-index: 99999; box-shadow: 0 2px 12px rgba(30,64,175,0.10); opacity:0; transition:opacity 0.3s; }
+    </style>
+</head>
+<body style="background:#F8FAFC;">
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="logo.png" alt="仓颉Logo" class="logo-img">
+                <span class="logo-text">仓颉大模型平台</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="maas.html">模型</a></li>
+                <li><a href="api-docs.html" class="active">API文档</a></li>
+                <li class="user-menu">
+                    <div class="user-avatar">U</div>
+                    <span class="user-name">用户</span>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- 右上角API申请按钮 -->
+    <div style="display:flex;max-width:1200px;margin:60px auto 0 auto;align-items:flex-start;">
+        <!-- 侧边锚点导航 -->
+        <nav style="width:180px;flex-shrink:0;margin-right:32px;">
+            <ul style="position:sticky;top:120px;list-style:none;padding:0;margin:0;font-size:16px;">
+                <li style="margin-bottom:18px;"><a href="#api-section-url" style="color:#1E40AF;text-decoration:none;">接口地址</a></li>
+                <li style="margin-bottom:18px;"><a href="#api-section-params" style="color:#1E40AF;text-decoration:none;">请求参数</a></li>
+                <li style="margin-bottom:18px;"><a href="#api-section-example" style="color:#1E40AF;text-decoration:none;">请求示例</a></li>
+                <li style="margin-bottom:18px;"><a href="#api-section-response" style="color:#1E40AF;text-decoration:none;">返回示例</a></li>
+                <li><a href="#api-section-error" style="color:#1E40AF;text-decoration:none;">错误码</a></li>
+            </ul>
+        </nav>
+        <!-- 主体内容 -->
+        <div class="api-docs-container" style="margin:0;flex:1;">
+            <div style="display:flex;justify-content:flex-end;align-items:center;margin-bottom:8px;">
+                <button class="api-apply-btn" style="margin:0;">API申请</button>
+            </div>
+            <div class="api-docs-title">API文档</div>
+            <div class="api-docs-section" id="api-section-url">
+                <h2>接口地址</h2>
+                <pre>POST https://api.yuanxing.ai/v1/chat/completions</pre>
+            </div>
+            <div class="api-docs-section" id="api-section-params">
+                <h2>请求参数</h2>
+                <ul>
+                    <li><b>model</b> (string)：模型名称，如 cangjie8b</li>
+                    <li><b>messages</b> (array)：对话消息数组，格式同OpenAI</li>
+                    <li><b>temperature</b> (float)：温度参数，0-2，控制生成多样性</li>
+                    <li><b>max_tokens</b> (int)：最大输出长度</li>
+                    <li><b>top_p</b> (float)：采样概率阈值</li>
+                    <li><b>stream</b> (bool)：是否流式输出</li>
+                </ul>
+            </div>
+            <div class="api-docs-section" id="api-section-example">
+                <h2>请求示例</h2>
+                <pre>{
+  "model": "cangjie8b",
+  "messages": [
+    {"role": "user", "content": "汽车发动机异响怎么办？"}
+  ],
+  "temperature": 1.0,
+  "max_tokens": 1024
+}</pre>
+            </div>
+            <div class="api-docs-section" id="api-section-response">
+                <h2>返回示例</h2>
+                <pre>{
+  "id": "chatcmpl-xxx",
+  "object": "chat.completion",
+  "created": 1710000000,
+  "model": "cangjie8b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {"role": "assistant", "content": "您好，针对发动机异响建议..."},
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {"prompt_tokens": 12, "completion_tokens": 32, "total_tokens": 44}
+}</pre>
+            </div>
+            <div class="api-docs-section" id="api-section-error">
+                <h2>错误码</h2>
+                <ul>
+                    <li>401 未授权/Key无效</li>
+                    <li>403 权限不足</li>
+                    <li>429 请求过多</li>
+                    <li>500 服务器错误</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- API申请弹窗 -->
+    <div id="api-apply-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeApiApplyModal()">×</button>
+            <h3>API申请</h3>
+            <form id="api-apply-form" onsubmit="submitApiApply(event)">
+                <div class="form-group">
+                    <label for="apply-phone">手机号</label>
+                    <input type="text" id="apply-phone" maxlength="11" required pattern="^1[3-9]\d{9}$" placeholder="请输入手机号">
+                </div>
+                <div class="form-group">
+                    <label for="apply-email">邮箱</label>
+                    <input type="email" id="apply-email" required placeholder="请输入邮箱">
+                </div>
+                <div class="form-group">
+                    <label for="apply-type">账号类型</label>
+                    <select id="apply-type" required>
+                        <option value="trial">测试</option>
+                        <option value="formal">正式购买</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="apply-desc">试用描述</label>
+                    <textarea id="apply-desc" rows="3" maxlength="100" required placeholder="请简要描述试用或购买需求"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeApiApplyModal()">取消</button>
+                    <button type="submit" class="btn-primary">确认申请</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+    // 右上角API申请按钮事件
+    document.querySelector('.api-apply-btn').onclick = openApiApplyModal;
+    function openApiApplyModal() {
+        document.getElementById('api-apply-modal').style.display = 'flex';
+    }
+    function closeApiApplyModal() {
+        document.getElementById('api-apply-modal').style.display = 'none';
+        document.getElementById('api-apply-form').reset();
+    }
+    function showToast(msg, type) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = msg;
+        toast.style.background = type === 'success' ? '#10B981' : '#1E40AF';
+        document.body.appendChild(toast);
+        setTimeout(()=>{toast.style.opacity=1;},10);
+        setTimeout(()=>{toast.style.opacity=0;setTimeout(()=>toast.remove(),300);},2200);
+    }
+    function submitApiApply(e) {
+        e.preventDefault();
+        const phone = document.getElementById('apply-phone').value.trim();
+        const email = document.getElementById('apply-email').value.trim();
+        const type = document.getElementById('apply-type').value;
+        const desc = document.getElementById('apply-desc').value.trim();
+        if (!/^1[3-9]\d{9}$/.test(phone)) {
+            showToast('请输入正确的手机号', 'error');
+            return;
+        }
+        if (!email) {
+            showToast('请输入邮箱', 'error');
+            return;
+        }
+        if (!desc) {
+            showToast('请填写试用描述', 'error');
+            return;
+        }
+        closeApiApplyModal();
+        if(type === 'trial') {
+            showToast('账号申请中，请稍等', 'success');
+        } else {
+            showToast('已收到申请，会有商务联系您，请注意接听电话', 'success');
+        }
+    }
+    </script>
+</body>
+</html> 

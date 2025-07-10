@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>通义千问 Qwen-72B - 模型详情</title>
+  <link rel="stylesheet" href="maas-styles.css">
+</head>
+<body>
+  <div class="detail-page-container">
+    <div class="detail-header">
+      <button class="modal-back" onclick="window.history.back()">&lt; 返回模型广场</button>
+      <span class="model-detail-logo">🤖</span>
+      <span class="model-detail-name">通义千问 Qwen-72B</span>
+      <span class="model-detail-tags"><span class="tag">通用</span><span class="tag">多语言</span></span>
+      <span class="model-detail-source">通义千问</span>
+    </div>
+    <div class="detail-tabs">
+      <span class="detail-tab active" id="tab-intro" onclick="switchDetailTab('intro')">模型介绍</span>
+      <span class="detail-tab" id="tab-version" onclick="switchDetailTab('version')">版本信息</span>
+    </div>
+    <div class="detail-body">
+      <div id="detail-intro" class="detail-section">
+        <div class="model-detail-desc">实现思考模式和非思考模式的有效融合，可在对话中切换模式。推理能力显著超过QwQ、通用能力显著超过Qwen2.5-72B-Instruct，达到同规模业界SOTA水平。</div>
+        <div class="model-detail-limit" style="margin-top:16px;">通义千问3-235B-A22B模型来源于第三方，百度智能云千帆大模型平台不保证其合规性，请您在使用前慎重考虑，确保合法合规使用并遵守第三方的要求。使用模型前请在"版本列表"中查看模型的开源协议，了解使用限制。如您发现模型/数据集/文件等有任何问题，请及时联系我们处理。</div>
+      </div>
+      <div id="detail-version" class="detail-section" style="display:none; max-height:300px; overflow-y:auto;">
+        <div class="version-item" style="border-bottom:1px solid #eee;padding:12px 0;">
+          <div><b>版本名称：</b>A22B</div>
+          <div><b>版本说明：</b>相比A21B推理能力提升</div>
+          <div><b>版本ID：</b>amv-qwen-a22b</div>
+          <div><b>上下文长度：</b>128K tokens + 8K tokens</div>
+          <div><b>输入输出模式：</b>对话模式</div>
+          <div><b>是否开源：</b>是</div>
+          <div><b>开源协议：</b>Apache 2.0</div>
+          <button class="action-btn primary" style="margin-top:8px;" onclick="handleExperience('amv-qwen-a22b')">立即体验</button>
+        </div>
+        <div class="version-item" style="border-bottom:1px solid #eee;padding:12px 0;">
+          <div><b>版本名称：</b>A21B</div>
+          <div><b>版本说明：</b>基础版本</div>
+          <div><b>版本ID：</b>amv-qwen-a21b</div>
+          <div><b>上下文长度：</b>64K tokens</div>
+          <div><b>输入输出模式：</b>对话模式</div>
+          <div><b>是否开源：</b>是</div>
+          <div><b>开源协议：</b>Apache 2.0</div>
+          <button class="action-btn primary" style="margin-top:8px;" onclick="handleExperience('amv-qwen-a21b')">立即体验</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    function switchDetailTab(tab) {
+      document.getElementById('tab-intro').classList.remove('active');
+      document.getElementById('tab-version').classList.remove('active');
+      document.getElementById('detail-intro').style.display = 'none';
+      document.getElementById('detail-version').style.display = 'none';
+      if(tab==='intro'){
+        document.getElementById('tab-intro').classList.add('active');
+        document.getElementById('detail-intro').style.display = 'block';
+      }else{
+        document.getElementById('tab-version').classList.add('active');
+        document.getElementById('detail-version').style.display = 'block';
+      }
+    }
+    function handleExperience(modelId) {
+      const isLogin = window.isLogin || false;
+      if(!isLogin){
+        window.location.href = 'login.html';
+      }else{
+        window.location.href = 'experience.html?model=' + encodeURIComponent(modelId);
+      }
+    }
+  </script>
+</body>
+</html> 

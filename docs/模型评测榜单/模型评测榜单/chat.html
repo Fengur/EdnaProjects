@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>汽车大模型对话体验</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --main-bg: #232946;
+      --card-bg: #fff;
+      --main-blue: #3e5ba9;
+      --main-pink: #eebbc3;
+      --main-gray: #b8c1ec;
+      --text-main: #232946;
+      --text-light: #fff;
+      --shadow: 0 4px 24px rgba(30,40,90,0.10);
+      --chat-bg: #f8f9fa;
+      --user-msg-bg: #3e5ba9;
+      --ai-msg-bg: #fff;
+      --border-color: #e0e0e0;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+      background: var(--main-bg);
+      color: var(--text-light);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* 导航栏 */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--main-bg);
+      color: var(--text-light);
+      padding: 0 48px;
+      height: 68px;
+      border-bottom: 1px solid #2d3250;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    .navbar .logo {
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: var(--main-pink);
+      text-shadow: 0 2px 8px rgba(238,187,195,0.18);
+    }
+    
+    .navbar .nav-links {
+      display: flex;
+      gap: 38px;
+    }
+    
+    .navbar .nav-links a {
+      color: var(--text-light);
+      text-decoration: none;
+      font-size: 18px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      transition: background 0.2s, color 0.2s;
+    }
+    
+    .navbar .nav-links a:hover {
+      background: var(--main-blue);
+      color: var(--main-pink);
+    }
+    
+    .navbar .back-btn {
+      background: var(--main-pink);
+      color: var(--main-bg);
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      box-shadow: var(--shadow);
+      font-size: 18px;
+      padding: 10px 18px;
+      border-radius: 8px;
+    }
+    
+    /* 主布局 */
+    .main-layout {
+      flex: 1;
+      display: flex;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      gap: 20px;
+      padding: 20px;
+    }
+    
+    /* 聊天容器 */
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--chat-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      min-width: 0;
+    }
+    
+    /* 高级设置面板 */
+    .settings-panel {
+      width: 320px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      height: fit-content;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+    
+    .settings-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .settings-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--text-main);
+    }
+    
+    .settings-toggle {
+      background: var(--main-blue);
+      color: var(--text-light);
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .settings-toggle:hover {
+      background: var(--main-pink);
+      color: var(--main-bg);
+    }
+    
+    .settings-section {
+      margin-bottom: 24px;
+    }
+    
+    .settings-section-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+    
+    .settings-field {
+      margin-bottom: 16px;
+    }
+    
+    .settings-field label {
+      display: block;
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    
+    .settings-field input,
+    .settings-field select,
+    .settings-field textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #fff;
+      color: var(--text-main);
+    }
+    
+    .settings-field input:focus,
+    .settings-field select:focus,
+    .settings-field textarea:focus {
+      outline: none;
+      border-color: var(--main-blue);
+    }
+    
+    .settings-field .range-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .settings-field .range-value {
+      min-width: 40px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--text-main);
+      font-weight: 500;
+    }
+    
+    .settings-field input[type="range"] {
+      flex: 1;
+      height: 6px;
+      background: #e0e0e0;
+      border-radius: 3px;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    
+    .settings-field input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      background: var(--main-blue);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    
+    .settings-field input[type="checkbox"] {
+      width: auto;
+      margin-right: 8px;
+    }
+    
+    .settings-field .checkbox-label {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+    
+    .settings-field .help-text {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+    
+    .tooltip-icon {
+      color: var(--main-blue);
+      cursor: help;
+      font-size: 14px;
+      margin-left: 4px;
+    }
+    
+    .input-range-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .input-range-container input[type="number"] {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #fff;
+      color: var(--text-main);
+    }
+    
+    .input-range-container input[type="number"]:focus {
+      outline: none;
+      border-color: var(--main-blue);
+    }
+    
+    .stop-inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .stop-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #fff;
+      color: var(--text-main);
+    }
+    
+    .stop-input:focus {
+      outline: none;
+      border-color: var(--main-blue);
+    }
+    
+    .add-stop-btn {
+      background: var(--main-blue);
+      color: var(--text-light);
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+      align-self: flex-start;
+    }
+    
+    .add-stop-btn:hover {
+      background: var(--main-pink);
+      color: var(--main-bg);
+    }
+    
+    .remove-stop-btn {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 10px;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+    
+    .remove-stop-btn:hover {
+      background: #c0392b;
+    }
+    
+    .stop-input-row {
+      display: flex;
+      align-items: center;
+    }
+    
+    .settings-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-color);
+    }
+    
+    .settings-btn {
+      flex: 1;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .settings-btn.primary {
+      background: var(--main-blue);
+      color: var(--text-light);
+    }
+    
+    .settings-btn.primary:hover {
+      background: var(--main-pink);
+      color: var(--main-bg);
+    }
+    
+    .settings-btn.secondary {
+      background: #f0f3fa;
+      color: var(--text-main);
+    }
+    
+    .settings-btn.secondary:hover {
+      background: #e0e0e0;
+    }
+    
+    /* 聊天头部 */
+    .chat-header {
+      background: var(--card-bg);
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .chat-header .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--main-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-light);
+      font-weight: bold;
+      font-size: 18px;
+    }
+    
+    .chat-header .info h3 {
+      color: var(--text-main);
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+    
+    .chat-header .info p {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    /* 消息区域 */
+    .messages-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      background: var(--chat-bg);
+    }
+    
+    .message {
+      display: flex;
+      margin-bottom: 24px;
+      gap: 12px;
+    }
+    
+    .message.user {
+      flex-direction: row-reverse;
+    }
+    
+    .message .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    
+    .message.user .avatar {
+      background: var(--main-pink);
+      color: var(--main-bg);
+    }
+    
+    .message.ai .avatar {
+      background: var(--main-blue);
+      color: var(--text-light);
+    }
+    
+    .message .content {
+      max-width: 70%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 16px;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+    
+    .message.user .content {
+      background: var(--user-msg-bg);
+      color: var(--text-light);
+      border-bottom-right-radius: 4px;
+    }
+    
+    .message.ai .content {
+      background: var(--ai-msg-bg);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      border-bottom-left-radius: 4px;
+    }
+    
+    /* 输入区域 */
+    .input-container {
+      background: var(--card-bg);
+      padding: 20px 24px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+    }
+    
+    .input-wrapper {
+      flex: 1;
+      position: relative;
+    }
+    
+    .message-input {
+      width: 100%;
+      min-height: 48px;
+      max-height: 120px;
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      font-size: 16px;
+      font-family: inherit;
+      resize: none;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    
+    .message-input:focus {
+      border-color: var(--main-blue);
+    }
+    
+    .send-btn {
+      background: var(--main-blue);
+      color: var(--text-light);
+      border: none;
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+      min-width: 80px;
+    }
+    
+    .send-btn:hover {
+      background: var(--main-pink);
+      color: var(--main-bg);
+    }
+    
+    .send-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    /* 欢迎消息 */
+    .welcome-message {
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+    }
+    
+    .welcome-message h2 {
+      color: var(--main-blue);
+      margin-bottom: 16px;
+      font-size: 24px;
+    }
+    
+    .welcome-message p {
+      margin-bottom: 24px;
+      font-size: 16px;
+    }
+    
+    .suggestions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .suggestion-btn {
+      background: var(--card-bg);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .suggestion-btn:hover {
+      background: var(--main-blue);
+      color: var(--text-light);
+      border-color: var(--main-blue);
+    }
+    
+    /* 加载动画 */
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      padding: 12px 16px;
+    }
+    
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #999;
+      animation: typing 1.4s infinite ease-in-out;
+    }
+    
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+    
+    @keyframes typing {
+      0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 1200px) {
+      .main-layout {
+        flex-direction: column;
+        gap: 16px;
+      }
+      
+      .settings-panel {
+        width: 100%;
+        order: -1;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 0 16px;
+      }
+      
+      .main-layout {
+        padding: 10px;
+      }
+      
+      .chat-container {
+        border-radius: 12px;
+      }
+      
+      .message .content {
+        max-width: 85%;
+      }
+      
+      .suggestions {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .settings-panel {
+        padding: 16px;
+      }
+      
+      .settings-section {
+        margin-bottom: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <div class="navbar">
+    <div class="logo">汽车大模型对话</div>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="dataset.html">评测数据集</a>
+      <a href="apply.html">我要上榜</a>
+    </div>
+    <button class="back-btn" onclick="window.location.href='index.html'">返回首页</button>
+  </div>
+
+  <!-- 主布局 -->
+  <div class="main-layout">
+    <!-- 聊天容器 -->
+    <div class="chat-container">
+      <!-- 聊天头部 -->
+      <div class="chat-header">
+        <div class="avatar">AI</div>
+        <div class="info">
+          <h3>汽车领域智能助手</h3>
+          <p>专业的汽车知识问答与咨询</p>
+        </div>
+      </div>
+
+      <!-- 消息区域 -->
+      <div class="messages-container" id="messagesContainer">
+        <!-- 欢迎消息 -->
+        <div class="welcome-message">
+          <h2>欢迎使用汽车大模型对话</h2>
+          <p>我是您的汽车领域智能助手，可以为您提供专业的汽车知识问答、购车建议、技术咨询等服务。</p>
+          <div class="suggestions">
+            <button class="suggestion-btn" onclick="sendMessage('请介绍一下新能源汽车的主要技术路线')">新能源汽车技术</button>
+            <button class="suggestion-btn" onclick="sendMessage('2024年主流电动车型有哪些优缺点？')">电动车型推荐</button>
+            <button class="suggestion-btn" onclick="sendMessage('如何判断一辆车的自动驾驶等级？')">自动驾驶等级</button>
+            <button class="suggestion-btn" onclick="sendMessage('汽车保养有哪些注意事项？')">汽车保养</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 输入区域 -->
+      <div class="input-container">
+        <div class="input-wrapper">
+          <textarea 
+            id="messageInput" 
+            class="message-input" 
+            placeholder="请输入您的问题..."
+            rows="1"
+            onkeydown="handleKeyDown(event)"
+          ></textarea>
+        </div>
+        <button id="sendBtn" class="send-btn" onclick="sendMessage()">发送</button>
+      </div>
+    </div>
+
+    <!-- 高级设置面板 -->
+    <div class="settings-panel">
+      <div class="settings-header">
+        <div class="settings-title">高级设置</div>
+        <button class="settings-toggle" onclick="toggleSettings()">收起</button>
+      </div>
+
+      <!-- 系统设置 -->
+      <div class="settings-section">
+        <div class="settings-section-title">系统设置</div>
+        
+        <div class="settings-field">
+          <label>
+            系统人设
+            <span class="tooltip-icon" title="假如你是买车客服">ⓘ</span>
+          </label>
+          <input type="text" id="systemPrompt" placeholder="假如你是买车客服" maxlength="20">
+          <div class="help-text">字符数不超过20</div>
+        </div>
+      </div>
+
+      <!-- 生成参数 -->
+      <div class="settings-section">
+        <div class="settings-section-title">生成参数</div>
+        
+        <div class="settings-field">
+          <label>
+            Top P
+            <span class="tooltip-icon" title="控制核采样方法的概率阈值，取值越大，生成的随机性越高。">ⓘ</span>
+          </label>
+          <div class="input-range-container">
+            <input type="number" id="topPInput" min="0.0001" max="1" step="0.0001" value="0.9" placeholder="0.9">
+            <div class="range-container">
+              <input type="range" id="topP" min="0.0001" max="1" step="0.0001" value="0.9">
+              <span class="range-value" id="topPValue">0.9</span>
+            </div>
+          </div>
+          <div class="help-text">范围：0.0001~1</div>
+        </div>
+
+        <div class="settings-field">
+          <label>
+            Temperature
+            <span class="tooltip-icon" title="控制生成随机性和多样性，范围(0,2)。建议该参数和top_p只设置1个。">ⓘ</span>
+          </label>
+          <div class="input-range-container">
+            <input type="number" id="temperatureInput" min="0" max="1.9999" step="0.0001" value="0.7" placeholder="0.7">
+            <div class="range-container">
+              <input type="range" id="temperature" min="0" max="1.9999" step="0.0001" value="0.7">
+              <span class="range-value" id="temperatureValue">0.7</span>
+            </div>
+          </div>
+          <div class="help-text">范围：0~1.9999</div>
+        </div>
+
+        <div class="settings-field">
+          <label>
+            Stop
+            <span class="tooltip-icon" title="用于控制生成时遇到某些内容则停止。您可传入多个字符串。">ⓘ</span>
+          </label>
+          <div id="stopContainer">
+            <div class="stop-inputs">
+              <input type="text" class="stop-input" placeholder="输入停止词">
+            </div>
+            <button type="button" class="add-stop-btn" onclick="addStopInput()">+ 新增</button>
+          </div>
+          <div class="help-text">点击+新增更多停止词</div>
+        </div>
+
+        <div class="settings-field">
+          <label class="checkbox-label">
+            <input type="checkbox" id="enableSearch">
+            <span>
+              Enable Search
+              <span class="tooltip-icon" title="是否参考搜索的结果，默认false。">ⓘ</span>
+            </span>
+          </label>
+          <div class="help-text">默认关闭</div>
+        </div>
+
+        <div class="settings-field">
+          <label>
+            Thinking Budget
+            <span class="tooltip-icon" title="是否参考搜索的结果，默认false。">ⓘ</span>
+          </label>
+          <div class="input-range-container">
+            <input type="number" id="thinkingBudgetInput" min="1" max="32768" step="1" value="1000" placeholder="1000">
+            <div class="range-container">
+              <input type="range" id="thinkingBudget" min="1" max="32768" step="1" value="1000">
+              <span class="range-value" id="thinkingBudgetValue">1000</span>
+            </div>
+          </div>
+          <div class="help-text">范围：1~32768</div>
+        </div>
+      </div>
+
+
+
+      <!-- 操作按钮 -->
+      <div class="settings-actions">
+        <button class="settings-btn primary" onclick="applySettings()">应用设置</button>
+        <button class="settings-btn secondary" onclick="resetSettings()">重置</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const messagesContainer = document.getElementById('messagesContainer');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    
+    // 设置对象
+    let currentSettings = {
+      systemPrompt: '假如你是买车客服',
+      topP: 0.9,
+      temperature: 0.7,
+      stop: [],
+      enableSearch: false,
+      thinkingBudget: 1000
+    };
+    
+    // 初始化设置
+    function initializeSettings() {
+      // 绑定范围滑块事件
+      const rangeInputs = ['temperature', 'topP', 'thinkingBudget'];
+      rangeInputs.forEach(id => {
+        const input = document.getElementById(id);
+        const valueSpan = document.getElementById(id + 'Value');
+        const numberInput = document.getElementById(id + 'Input');
+        
+        input.addEventListener('input', function() {
+          valueSpan.textContent = this.value;
+          if (numberInput) {
+            numberInput.value = this.value;
+          }
+        });
+        
+        if (numberInput) {
+          numberInput.addEventListener('input', function() {
+            input.value = this.value;
+            valueSpan.textContent = this.value;
+          });
+        }
+      });
+      
+      // 加载保存的设置
+      loadSettings();
+    }
+    
+    // 加载设置
+    function loadSettings() {
+      const savedSettings = localStorage.getItem('chatSettings');
+      if (savedSettings) {
+        currentSettings = { ...currentSettings, ...JSON.parse(savedSettings) };
+        applySettingsToUI();
+      }
+    }
+    
+    // 将设置应用到UI
+    function applySettingsToUI() {
+      document.getElementById('systemPrompt').value = currentSettings.systemPrompt;
+      document.getElementById('temperature').value = currentSettings.temperature;
+      document.getElementById('temperatureValue').textContent = currentSettings.temperature;
+      document.getElementById('temperatureInput').value = currentSettings.temperature;
+      document.getElementById('topP').value = currentSettings.topP;
+      document.getElementById('topPValue').textContent = currentSettings.topP;
+      document.getElementById('topPInput').value = currentSettings.topP;
+      document.getElementById('thinkingBudget').value = currentSettings.thinkingBudget;
+      document.getElementById('thinkingBudgetValue').textContent = currentSettings.thinkingBudget;
+      document.getElementById('thinkingBudgetInput').value = currentSettings.thinkingBudget;
+      document.getElementById('enableSearch').checked = currentSettings.enableSearch;
+      
+      // 渲染stop输入框
+      renderStopInputs();
+    }
+    
+    // 应用设置
+    function applySettings() {
+      currentSettings = {
+        systemPrompt: document.getElementById('systemPrompt').value,
+        temperature: parseFloat(document.getElementById('temperature').value),
+        topP: parseFloat(document.getElementById('topP').value),
+        stop: getStopValues(),
+        enableSearch: document.getElementById('enableSearch').checked,
+        thinkingBudget: parseInt(document.getElementById('thinkingBudget').value)
+      };
+      
+      // 保存到本地存储
+      localStorage.setItem('chatSettings', JSON.stringify(currentSettings));
+      
+      // 显示成功提示
+      showNotification('设置已应用');
+    }
+    
+    // 重置设置
+    function resetSettings() {
+      if (confirm('确定要重置所有设置吗？')) {
+        localStorage.removeItem('chatSettings');
+        currentSettings = {
+          systemPrompt: '假如你是买车客服',
+          topP: 0.9,
+          temperature: 0.7,
+          stop: [],
+          enableSearch: false,
+          thinkingBudget: 1000
+        };
+        applySettingsToUI();
+        showNotification('设置已重置');
+      }
+    }
+    
+    // 切换设置面板
+    function toggleSettings() {
+      const settingsPanel = document.querySelector('.settings-panel');
+      const toggleBtn = document.querySelector('.settings-toggle');
+      
+      if (settingsPanel.style.display === 'none') {
+        settingsPanel.style.display = 'block';
+        toggleBtn.textContent = '收起';
+      } else {
+        settingsPanel.style.display = 'none';
+        toggleBtn.textContent = '展开';
+      }
+    }
+    
+    // 显示通知
+    function showNotification(message) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--main-blue);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        z-index: 1000;
+        font-size: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      `;
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 2000);
+    }
+    
+    // 自动调整输入框高度
+    messageInput.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+    
+    // 处理回车发送
+    function handleKeyDown(event) {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    }
+    
+    // 发送消息
+    function sendMessage(customMessage = null) {
+      const message = customMessage || messageInput.value.trim();
+      if (!message) return;
+      
+      // 添加用户消息
+      addMessage(message, 'user');
+      
+      // 清空输入框
+      if (!customMessage) {
+        messageInput.value = '';
+        messageInput.style.height = 'auto';
+      }
+      
+      // 显示AI正在输入
+      showTypingIndicator();
+      
+      // 模拟AI回复
+      setTimeout(() => {
+        hideTypingIndicator();
+        const response = generateResponse(message);
+        addMessage(response, 'ai');
+      }, 1000 + Math.random() * 2000);
+    }
+    
+    // 添加消息到界面
+    function addMessage(content, sender) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}`;
+      
+      const avatar = document.createElement('div');
+      avatar.className = 'avatar';
+      avatar.textContent = sender === 'user' ? '我' : 'AI';
+      
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'content';
+      contentDiv.textContent = content;
+      
+      messageDiv.appendChild(avatar);
+      messageDiv.appendChild(contentDiv);
+      
+      messagesContainer.appendChild(messageDiv);
+      
+      // 自动滚动
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+    
+
+    
+    // 显示输入指示器
+    function showTypingIndicator() {
+      const indicator = document.createElement('div');
+      indicator.className = 'message ai';
+      indicator.id = 'typingIndicator';
+      
+      const avatar = document.createElement('div');
+      avatar.className = 'avatar';
+      avatar.textContent = 'AI';
+      
+      const content = document.createElement('div');
+      content.className = 'content';
+      content.innerHTML = '<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+      
+      indicator.appendChild(avatar);
+      indicator.appendChild(content);
+      messagesContainer.appendChild(indicator);
+      
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+    
+    // 隐藏输入指示器
+    function hideTypingIndicator() {
+      const indicator = document.getElementById('typingIndicator');
+      if (indicator) {
+        indicator.remove();
+      }
+    }
+    
+    // 生成AI回复
+    function generateResponse(userMessage) {
+      // 根据当前设置调整回复
+      let response = '';
+      
+      const responses = {
+        '请介绍一下新能源汽车的主要技术路线': '新能源汽车的主要技术路线包括：\n\n1. 纯电动（BEV）：完全依靠电池驱动，如特斯拉、比亚迪等\n2. 插电式混合动力（PHEV）：可充电的混合动力，如理想、问界等\n3. 增程式电动（EREV）：内燃机发电驱动，如理想ONE\n4. 燃料电池（FCEV）：氢燃料电池，如丰田Mirai\n\n目前纯电动和插电式混合动力是主流技术路线。',
+        
+        '2024年主流电动车型有哪些优缺点？': '2024年主流电动车型分析：\n\n优点：\n- 环保节能，使用成本低\n- 加速性能优秀\n- 智能化程度高\n- 政策支持力度大\n\n缺点：\n- 续航里程焦虑\n- 充电基础设施不完善\n- 电池衰减问题\n- 二手车保值率较低\n\n建议根据个人使用场景和充电条件选择。',
+        
+        '如何判断一辆车的自动驾驶等级？': '自动驾驶等级判断标准：\n\nL0：完全人工驾驶\nL1：驾驶辅助（如自适应巡航）\nL2：部分自动驾驶（如特斯拉Autopilot）\nL3：有条件自动驾驶（如奔驰Drive Pilot）\nL4：高度自动驾驶（如Waymo）\nL5：完全自动驾驶\n\n目前市面上主要是L2级别，L3开始商业化。',
+        
+        '汽车保养有哪些注意事项？': '汽车保养注意事项：\n\n1. 定期更换机油和滤芯\n2. 检查轮胎气压和磨损\n3. 定期检查刹车系统\n4. 保持电瓶清洁\n5. 定期清洗空调系统\n6. 注意雨刷器更换\n7. 定期检查车灯\n8. 保持车身清洁\n\n建议按照厂家保养手册执行。'
+      };
+      
+      // 检查是否有匹配的预设回复
+      for (const [key, value] of Object.entries(responses)) {
+        if (userMessage.includes(key) || key.includes(userMessage)) {
+          response = value;
+          break;
+        }
+      }
+      
+      // 如果没有预设回复，生成通用回复
+      if (!response) {
+        const generalResponses = [
+          '这是一个很好的问题！在汽车领域，我建议您考虑以下几个方面...',
+          '根据您的问题，我可以为您提供一些专业的建议...',
+          '在汽车技术方面，这个问题涉及到多个维度，让我为您详细分析...',
+          '作为汽车领域的智能助手，我建议您可以从这个角度来思考...',
+          '这是一个很有价值的问题，让我为您提供一些参考信息...'
+        ];
+        response = generalResponses[Math.floor(Math.random() * generalResponses.length)];
+      }
+      
+      // 根据温度设置调整回复长度
+      if (currentSettings.temperature > 1.5) {
+        response += '\n\n（基于当前设置，我提供了更有创意的回答）';
+      }
+      
+      // 根据最大长度限制回复
+      if (response.length > currentSettings.maxTokens) {
+        response = response.substring(0, currentSettings.maxTokens) + '...';
+      }
+      
+      return response;
+    }
+    
+    // 添加stop输入框
+    function addStopInput() {
+      const stopInputs = document.querySelector('.stop-inputs');
+      const stopRow = document.createElement('div');
+      stopRow.className = 'stop-input-row';
+      stopRow.innerHTML = `
+        <input type="text" class="stop-input" placeholder="输入停止词">
+        <button type="button" class="remove-stop-btn" onclick="removeStopInput(this)">×</button>
+      `;
+      stopInputs.appendChild(stopRow);
+    }
+    
+    // 移除stop输入框
+    function removeStopInput(button) {
+      button.parentElement.remove();
+    }
+    
+    // 获取所有stop值
+    function getStopValues() {
+      const stopInputs = document.querySelectorAll('.stop-input');
+      const values = [];
+      stopInputs.forEach(input => {
+        if (input.value.trim()) {
+          values.push(input.value.trim());
+        }
+      });
+      return values;
+    }
+    
+    // 渲染stop输入框
+    function renderStopInputs() {
+      const stopInputs = document.querySelector('.stop-inputs');
+      stopInputs.innerHTML = '';
+      
+      if (currentSettings.stop.length === 0) {
+        stopInputs.innerHTML = '<input type="text" class="stop-input" placeholder="输入停止词">';
+      } else {
+        currentSettings.stop.forEach((stop, index) => {
+          const stopRow = document.createElement('div');
+          stopRow.className = 'stop-input-row';
+          stopRow.innerHTML = `
+            <input type="text" class="stop-input" value="${stop}" placeholder="输入停止词">
+            <button type="button" class="remove-stop-btn" onclick="removeStopInput(this)">×</button>
+          `;
+          stopInputs.appendChild(stopRow);
+        });
+      }
+    }
+    
+    // 页面加载时初始化
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeSettings();
+    });
+  </script>
+</body>
+</html> 

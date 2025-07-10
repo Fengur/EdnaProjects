@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于我们 - 汽车之家仓颉</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* 关于我们页面专用样式 */
+        .about-hero {
+            background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
+            color: white;
+            padding: 120px 0 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .about-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #FFFFFF, #E0E7FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .about-hero p {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .company-intro {
+            padding: 100px 0;
+            background: #F8FAFC;
+        }
+
+        .company-intro .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .company-text h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #1E293B;
+            margin-bottom: 30px;
+        }
+
+        .company-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #64748B;
+            margin-bottom: 25px;
+        }
+
+        .company-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 30px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1E40AF;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #64748B;
+            font-weight: 500;
+        }
+
+        .company-visual {
+            position: relative;
+        }
+
+        .company-visual img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline {
+            padding: 100px 0;
+            background: white;
+        }
+
+        .timeline h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #1E293B;
+            margin-bottom: 60px;
+        }
+
+        .timeline-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #3B82F6, #60A5FA);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            width: 45%;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-right: 5%;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: 5%;
+        }
+
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content::before {
+            right: -10px;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent white;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content::before {
+            left: -10px;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent white transparent transparent;
+        }
+
+        .timeline-year {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1E40AF;
+            margin-bottom: 15px;
+        }
+
+        .timeline-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1E293B;
+            margin-bottom: 10px;
+        }
+
+        .timeline-desc {
+            color: #64748B;
+            line-height: 1.6;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            background: #3B82F6;
+            border: 4px solid white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 0 4px #E0E7FF;
+        }
+
+        .contact-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .contact-section h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .contact-section p {
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .contact-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: white;
+            color: #1E40AF;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .about-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .company-intro .container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .timeline-container::before {
+                left: 20px;
+            }
+
+            .timeline-item {
+                flex-direction: column !important;
+                align-items: flex-start;
+            }
+
+            .timeline-content {
+                width: calc(100% - 60px);
+                margin-left: 60px !important;
+                margin-right: 0 !important;
+            }
+
+            .timeline-content::before {
+                left: -10px !important;
+                border-width: 10px 10px 10px 0 !important;
+                border-color: transparent white transparent transparent !important;
+            }
+
+            .timeline-dot {
+                left: 20px;
+            }
+
+            .company-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="logo-placeholder.png" alt="Logo" class="logo-img">
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="index.html#products">产品</a></li>
+                <li><a href="about.html" class="active">关于我们</a></li>
+                <li><a href="cooperation.html" class="login-btn">合作咨询</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 关于我们英雄区域 -->
+    <section class="about-hero">
+        <div class="about-hero-content">
+            <h1>关于汽车之家仓颉</h1>
+            <p>致力于用AI技术重塑汽车行业，让智能科技普惠每一个汽车从业者</p>
+        </div>
+    </section>
+
+    <!-- 公司介绍 -->
+    <section class="company-intro">
+        <div class="container">
+            <div class="company-text">
+                <h2>汽车行业AI大模型的领航者</h2>
+                <p>汽车之家仓颉是汽车之家集团旗下的AI大模型平台，专注于汽车垂直领域的智能化解决方案。我们融合了汽车之家20年积累的行业数据、专业知识和用户洞察，打造了业界领先的汽车AI大模型。</p>
+                <p>作为汽车行业的数字化基础设施，我们致力于为汽车制造商、经销商、服务商以及消费者提供智能化、个性化的服务体验，推动整个汽车产业的数字化转型。</p>
+                <div class="company-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">20+</div>
+                        <div class="stat-label">年行业经验</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">5000万+</div>
+                        <div class="stat-label">用户数据</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">100+</div>
+                        <div class="stat-label">合作伙伴</div>
+                    </div>
+                </div>
+            </div>
+            <div class="company-visual">
+                <img src="company-building.jpg" alt="汽车之家总部" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div style="display:none; width:100%; height:400px; background:linear-gradient(135deg, #3B82F6, #60A5FA); border-radius:16px; display:flex; align-items:center; justify-content:center; color:white; font-size:1.5rem;">
+                    汽车之家总部
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 发展历程 -->
+    <section class="timeline">
+        <div class="container">
+            <h2>发展历程</h2>
+            <div class="timeline-container">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2005年</div>
+                        <div class="timeline-title">汽车之家网站正式上线</div>
+                        <div class="timeline-desc">汽车之家（autohome.com.cn）正式上线，专注于为中国汽车消费者提供专业、权威的汽车资讯和导购服务。</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2008年</div>
+                        <div class="timeline-title">社区与口碑业务上线</div>
+                        <div class="timeline-desc">汽车之家上线论坛、车主口碑等互动社区，成为中国最活跃的汽车网络社区之一。</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2013年</div>
+                        <div class="timeline-title">纽交所上市</div>
+                        <div class="timeline-desc">汽车之家在美国纽约证券交易所（NYSE）成功上市，股票代码ATHM，成为中国汽车互联网第一股。</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2016年</div>
+                        <div class="timeline-title">易车入主，战略升级</div>
+                        <div class="timeline-desc">中国平安集团旗下易车成为控股股东，汽车之家开启战略升级，布局汽车全产业链数字化。</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2018年</div>
+                        <div class="timeline-title">智能化与大数据驱动</div>
+                        <div class="timeline-desc">汽车之家加速大数据、AI等技术布局，推出智能选车、智能估值等创新产品。</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2020年</div>
+                        <div class="timeline-title">国际化拓展</div>
+                        <div class="timeline-desc">汽车之家启动国际化战略，业务拓展至东南亚等海外市场。</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2023年</div>
+                        <div class="timeline-title">仓颉大模型发布</div>
+                        <div class="timeline-desc">发布汽车行业首个垂直大模型"仓颉"，推动汽车AI产业升级。</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系我们 -->
+    <section class="contact-section">
+        <div class="container">
+            <h2>与我们合作</h2>
+            <p>如果您对汽车AI技术感兴趣，或者希望与我们建立合作关系，欢迎联系我们</p>
+            <a href="cooperation.html" class="contact-btn">立即咨询</a>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>汽车之家仓颉</h3>
+                    <p>让AI技术普惠汽车行业</p>
+                </div>
+                <div class="footer-section">
+                    <h4>产品</h4>
+                    <ul>
+                        <li><a href="index.html#evaluation">模型评测榜单</a></li>
+                        <li><a href="maas.html">仓颉大模型服务</a></li>
+                        <li><a href="index.html#tianshu">天枢智能体平台</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>关于我们</h4>
+                    <ul>
+                        <li><a href="about.html">公司介绍</a></li>
+                        <li><a href="about.html#team">团队</a></li>
+                        <li><a href="cooperation.html">合作伙伴</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>联系我们</h4>
+                    <p>contact@corpautohome.com</p>
+                    <div style="margin-top:10px;"><img src="qrcode-placeholder.png" alt="扫码咨询" style="width:90px;height:90px;border-radius:8px;"></div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 汽车之家仓颉. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> 

@@ -1,0 +1,100 @@
+埋点需求表
+
+页面	埋点事件	事件名称	事件描述	埋点参数	参数类型	参数说明	触发时机	业务价值
+首页	页面访问	page_view	用户访问首页	page_name	string	页面名称	页面加载完成	了解首页访问量
+		url	string	页面URL		
+		referrer	string	来源页面		
+		user_agent	string	用户代理		
+首页	Banner点击	banner_click	用户点击Banner区域	section	string	Banner区域名称	用户点击Banner	了解Banner转化效果
+		click_type	string	点击类型(logo/二维码/按钮)		
+		position	string	点击位置		
+首页	功能点点击	feature_click	用户点击功能介绍	feature_name	string	功能名称	用户点击功能点	了解用户关注的功能
+		feature_id	string	功能ID		
+		section	string	所属区块		
+首页	导航点击	navigation_click	用户点击导航菜单	nav_item	string	导航项名称	用户点击导航	了解导航使用情况
+		nav_level	string	导航层级		
+首页	页脚点击	footer_click	用户点击页脚链接	footer_item	string	页脚项名称	用户点击页脚	了解页脚转化
+		link_type	string	链接类型		
+MaaS平台	页面访问	page_view	用户访问MaaS平台	page_name	string	页面名称	页面加载完成	了解平台访问量
+		url	string	页面URL		
+		referrer	string	来源页面		
+MaaS平台	模型广场访问	model_square_view	用户访问模型广场	section	string	区域名称	进入模型广场	了解模型广场访问
+		supplier_filter	string	供应商筛选条件		
+MaaS平台	模型搜索	model_search	用户搜索模型	search_keyword	string	搜索关键词	用户输入搜索	了解搜索行为
+		search_type	string	搜索类型(模糊/精确)		
+		search_result_count	int	搜索结果数量		
+MaaS平台	模型筛选	model_filter	用户筛选模型	filter_type	string	筛选类型	用户选择筛选条件	了解筛选偏好
+		filter_value	string	筛选值		
+		filter_count	int	筛选结果数量		
+MaaS平台	模型卡片点击	model_card_click	用户点击模型卡片	model_name	string	模型名称	用户点击模型卡片	了解模型关注度
+		model_id	string	模型ID		
+		supplier	string	供应商名称		
+		model_type	string	模型类型		
+MaaS平台	模型详情查看	model_detail_view	用户查看模型详情	model_name	string	模型名称	进入模型详情	了解模型详情查看
+		model_id	string	模型ID		
+		view_type	string	查看类型(弹窗/页面)		
+MaaS平台	模型详情Tab切换	model_detail_tab	用户切换详情Tab	model_name	string	模型名称	用户切换Tab	了解用户关注的信息
+		model_id	string	模型ID		
+		tab_name	string	Tab名称		
+		tab_type	string	Tab类型(介绍/版本)		
+MaaS平台	体验中心访问	experience_center_view	用户访问体验中心	section	string	区域名称	进入体验中心	了解体验中心使用
+MaaS平台	模型选择	model_selection	用户选择体验模型	selected_model	string	选中的模型	用户选择模型	了解体验偏好
+		model_id	string	模型ID		
+		model_type	string	模型类型		
+MaaS平台	高级配置修改	advanced_config_change	用户修改高级配置	config_name	string	配置项名称	用户修改配置	了解配置使用情况
+		config_value	string	配置值		
+		config_type	string	配置类型		
+MaaS平台	对话发送	chat_send	用户发送对话	model_name	string	模型名称	用户发送消息	了解对话使用情况
+		model_id	string	模型ID		
+		message_length	int	消息长度		
+		config_params	object	高级配置参数		
+MaaS平台	对话响应	chat_response	模型响应对话	model_name	string	模型名称	模型返回响应	了解响应质量
+		model_id	string	模型ID		
+		response_time	int	响应时间(ms)		
+		response_length	int	响应长度		
+		response_quality	string	响应质量评估		
+MaaS平台	数据统计访问	stats_view	用户访问数据统计	section	string	区域名称	进入数据统计	了解统计页面使用
+		time_range	string	时间范围		
+MaaS平台	统计筛选	stats_filter	用户筛选统计数据	filter_type	string	筛选类型	用户选择筛选	了解统计需求
+		filter_value	string	筛选值		
+		time_range	string	时间范围		
+MaaS平台	AppKey管理访问	appkey_management_view	用户访问AppKey管理	section	string	区域名称	进入AppKey管理	了解管理功能使用
+MaaS平台	AppKey操作	appkey_operation	用户操作AppKey	operation_type	string	操作类型	用户执行操作	了解管理行为
+		appkey_id	string	AppKey ID		
+		operation_result	string	操作结果		
+MaaS平台	模型评测访问	evaluation_view	用户访问模型评测	section	string	区域名称	进入模型评测	了解评测功能使用
+MaaS平台	评测维度查看	evaluation_dimension_view	用户查看评测维度	dimension_name	string	维度名称	用户查看维度	了解评测关注点
+		dimension_type	string	维度类型		
+MaaS平台	登录弹窗	login_modal	用户触发登录弹窗	trigger_page	string	触发页面	用户点击登录	了解登录转化
+		trigger_action	string	触发动作		
+		modal_result	string	弹窗结果(成功/取消)		
+MaaS平台	导航点击	navigation_click	用户点击导航菜单	nav_item	string	导航项名称	用户点击导航	了解导航使用
+		nav_level	string	导航层级		
+		page_from	string	来源页面		
+用户行为	用户注册	user_register	用户注册账号	register_method	string	注册方式	用户完成注册	了解用户获取
+		register_source	string	注册来源		
+用户行为	用户登录	user_login	用户登录账号	login_method	string	登录方式	用户完成登录	了解用户活跃
+		login_source	string	登录来源		
+用户行为	用户登出	user_logout	用户登出账号	logout_reason	string	登出原因	用户登出	了解用户行为
+用户行为	页面停留	page_stay	用户页面停留	page_name	string	页面名称	页面卸载	了解页面吸引力
+		stay_duration	int	停留时长(秒)		
+		scroll_depth	int	滚动深度(%)		
+用户行为	功能使用	feature_usage	用户使用功能	feature_name	string	功能名称	用户使用功能	了解功能受欢迎程度
+		usage_count	int	使用次数		
+		usage_duration	int	使用时长(秒)		
+错误监控	页面错误	page_error	页面发生错误	error_type	string	错误类型	页面报错	监控系统稳定性
+		error_message	string	错误信息		
+		error_stack	string	错误堆栈		
+		page_url	string	页面URL		
+错误监控	API错误	api_error	API调用失败	api_name	string	API名称	API调用失败	监控接口稳定性
+		error_code	string	错误码		
+		error_message	string	错误信息		
+		request_params	object	请求参数		
+性能监控	页面加载	page_load	页面加载性能	load_time	int	加载时间(ms)	页面加载完成	监控页面性能
+		resource_count	int	资源数量		
+		resource_size	int	资源大小(KB)		
+性能监控	API响应	api_response	API响应性能	api_name	string	API名称	API响应完成	监控接口性能
+		response_time	int	响应时间(ms)		
+		response_size	int	响应大小(KB)		
+		status_code	int	状态码		
+``` 
